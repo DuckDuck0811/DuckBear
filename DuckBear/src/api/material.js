@@ -17,3 +17,15 @@ export function getMaterialsByChapterApi(chapterId) {
 export function deleteMaterialApi(id) {
   return api.delete(`/material-management/remove/${id}`);
 }
+
+// === MỚI ===
+export function getMaterialByBookApi(bookId) {
+  return api.get(`/material-management/book/${bookId}`);
+}
+
+// File PDF cần trả về dạng blob vì đây là file nhị phân, không phải JSON
+export function getMaterialFileApi(id) {
+  return api.get(`/material-management/${id}/file`, {
+    responseType: "blob",
+  });
+}

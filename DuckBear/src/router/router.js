@@ -16,6 +16,8 @@ import Assignmentgenerateview from "@/view/Assignment/Assignmentgenerateview.vue
 import Classesview from "@/view/Classes/Classesview.vue";
 import Logsview from "@/view/Logs/Logsview.vue";
 import Profileview from "@/view/Profile/Profileview.vue";
+import BookFlipViewer from "@/view/Book/BookFlipViewer.vue";
+import { components } from "vuetify/dist/vuetify.js";
 
 const routes = [
   {
@@ -120,6 +122,13 @@ const routes = [
         name: "teacher-profile",
         component: Profileview,
         meta: { title: "Hồ sơ cá nhân" },
+      },
+      {
+        path: "book-viewer",
+        name: "teacher-book-viewer",
+        components: { default: BookFlipViewer },
+        props: (route) => ({ bookId: route.query.bookId }),
+        meta: { title: "Xem sách" },
       },
     ],
   },

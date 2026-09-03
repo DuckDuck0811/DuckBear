@@ -128,6 +128,11 @@
                 @click="openImportMaterial({ type: 'book', book })"
               />
               <v-list-item
+                prepend-icon="mdi-book-open-page-variant"
+                title="Xem sách (lật trang)"
+                @click.stop="openFlipViewer(book)"
+              />
+              <v-list-item
                 prepend-icon="mdi-pencil-outline"
                 title="Sửa"
                 @click="openEdit(book)"
@@ -221,6 +226,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
     <!-- Import material dialog -->
     <v-dialog v-model="materialDialog" max-width="560">
       <v-card class="pa-2">
@@ -229,8 +235,7 @@
           <div class="import-target-label">{{ importTargetLabel }}</div>
         </v-card-title>
 
-        <!-- Bước 1: chọn sách + file, chưa preview -->
-        <v-card-text v-if="!previewChapters">
+        <v-card-text>
           <v-form ref="materialFormRef">
             <template
               v-if="importTarget?.type === 'book' && !importTarget?.book"
@@ -248,6 +253,17 @@
                 class="mb-3"
               />
             </template>
+
+            <div class="field-label">Tên tài liệu</div>
+            <v-text-field
+              v-model="materialForm.title"
+              variant="outlined"
+              density="comfortable"
+              placeholder="VD: Toán 6 - Tập 1 (Full)"
+              :rules="[(v) => !!v || 'Vui lòng nhập tên tài liệu']"
+              class="mb-3"
+            />
+
             <div class="field-label">File PDF</div>
             <v-file-input
               v-model="materialForm.file"
@@ -263,76 +279,24 @@
           </v-form>
         </v-card-text>
 
-        <!-- Bước 2: xem trước chương/bài học đọc được -->
-        <v-card-text v-else style="max-height: 420px; overflow-y: auto">
-          <p class="text-body-2 mb-3" style="color: #6b7383">
-            Đã đọc được {{ previewChapters.length }} chương. Kiểm tra lại trước
-            khi lưu.
-          </p>
-          <div v-for="(chapter, ci) in previewChapters" :key="ci" class="mb-3">
-            <v-text-field
-              v-model="chapter.title"
-              variant="outlined"
-              density="compact"
-              hide-details
-              class="mb-2"
-            >
-              <template #prepend-inner>
-                <span style="font-weight: 700; color: #1a2540">
-                  {{ chapter.romanNumber }}.
-                </span>
-              </template>
-            </v-text-field>
-            <div
-              v-for="(lesson, li) in chapter.lessons"
-              :key="li"
-              class="ml-6 mb-1"
-            >
-              <v-text-field
-                v-model="lesson.title"
-                variant="outlined"
-                density="compact"
-                hide-details
-              />
-            </div>
-          </div>
-        </v-card-text>
-
         <v-card-actions class="pa-4 pt-0">
           <v-spacer />
           <v-btn
             variant="text"
             class="text-none"
             @click="materialDialog = false"
-            >Hủy</v-btn
           >
+            Hủy
+          </v-btn>
           <v-btn
-            v-if="!previewChapters"
             color="#1B2A4A"
             variant="flat"
             class="text-none"
-            :loading="previewing"
-            @click="startPreview"
+            :loading="savingMaterial"
+            @click="submitMaterial"
           >
-            Đọc file &amp; xem trước
+            Tải lên
           </v-btn>
-          <template v-else>
-            <v-btn
-              variant="text"
-              class="text-none"
-              @click="previewChapters = null"
-              >Chọn lại file</v-btn
-            >
-            <v-btn
-              color="#1B2A4A"
-              variant="flat"
-              class="text-none"
-              :loading="confirming"
-              @click="confirmImport"
-            >
-              Xác nhận lưu
-            </v-btn>
-          </template>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -350,20 +314,19 @@ import {
   deleteBookApi,
 } from "@/api/book";
 import { uploadMaterialApi } from "@/api/material";
-import { previewImportApi, confirmImportApi } from "@/api/book";
 import { getSubjectsApi } from "@/api/subject";
+
 const router = useRouter();
 
 const loading = ref(false);
 const books = ref([]);
-const subjects = ref([]); // [{id, name}]
+const subjects = ref([]);
 
 const subjectOptions = computed(() =>
   subjects.value.map((s) => ({ title: s.name, value: s.id })),
 );
 const gradeOptions = Array.from({ length: 12 }, (_, i) => String(i + 1));
 
-// Màu cover cho từng sách (BE không lưu màu, tự sinh theo id cho đỡ đơn điệu)
 const coverColors = ["#3D5AFE", "#F2B84B", "#22B07D", "#E4572E", "#7C5CFF"];
 function colorForBook(id) {
   return coverColors[id % coverColors.length];
@@ -379,7 +342,7 @@ async function fetchBooks() {
       subject: b.subjectName,
       subjectId: b.subjectId,
       grade: b.gradeLevel,
-      chapterCount: b.chapterCount ?? 0, // BE hiện chưa trả field này, tạm để 0
+      chapterCount: b.chapterCount ?? 0,
       lessonCount: b.lessonCount ?? 0,
       color: colorForBook(b.id),
     }));
@@ -393,7 +356,7 @@ async function fetchBooks() {
 async function fetchSubjects() {
   try {
     const res = await getSubjectsApi();
-    subjects.value = res.data; // [{id, name}]
+    subjects.value = res.data;
   } catch (err) {
     console.error("Lỗi tải môn học:", err);
   }
@@ -460,7 +423,7 @@ async function saveBook() {
       await createBookApi(payload);
     }
     dialog.value = false;
-    await fetchBooks(); // reload lại danh sách sau khi lưu
+    await fetchBooks();
   } catch (err) {
     console.error("Lỗi lưu sách:", err);
     alert(err.response?.data?.message || "Không thể lưu sách");
@@ -489,15 +452,16 @@ function goToLessons(book) {
   router.push({ name: "teacher-lessons", query: { bookId: book.id } });
 }
 
+function openFlipViewer(book) {
+  router.push({ name: "teacher-book-viewer", query: { bookId: book.id } });
+}
+
 /* ---------- Import material (PDF) ---------- */
 const materialDialog = ref(false);
 const materialFormRef = ref(null);
 const savingMaterial = ref(false);
 const materialForm = reactive({ title: "", file: null, bookId: null });
-const importTarget = ref(null); // { type: 'book'|'chapter'|'lesson', chapter, lesson }
-const previewChapters = ref(null); // null = chưa preview, [] = đã preview
-const previewing = ref(false);
-const confirming = ref(false);
+const importTarget = ref(null);
 
 const importTargetLabel = computed(() => {
   if (!importTarget.value) return "";
@@ -515,50 +479,48 @@ function openImportMaterial(target) {
   materialForm.title = "";
   materialForm.file = null;
   materialForm.bookId = target.book?.id || null;
-  previewChapters.value = null;
   materialDialog.value = true;
 }
 
-async function startPreview() {
+async function submitMaterial() {
   const { valid } = await materialFormRef.value.validate();
   if (!valid) return;
 
-  if (!materialForm.bookId) {
-    alert("Vui lòng chọn sách trước khi import");
+  const bookId =
+    importTarget.value?.type === "book" ? materialForm.bookId : null;
+  const chapterId =
+    importTarget.value?.type === "chapter"
+      ? importTarget.value.chapter.id
+      : null;
+  const lessonId =
+    importTarget.value?.type === "lesson" ? importTarget.value.lesson.id : null;
+
+  if (importTarget.value?.type === "book" && !bookId) {
+    alert("Vui lòng chọn sách trước khi tải lên");
     return;
   }
 
-  previewing.value = true;
   const fileToUpload = Array.isArray(materialForm.file)
     ? materialForm.file[0]
     : materialForm.file;
 
   const formData = new FormData();
+  formData.append("title", materialForm.title);
   formData.append("file", fileToUpload);
+  if (bookId) formData.append("bookId", bookId);
+  if (chapterId) formData.append("chapterId", chapterId);
+  if (lessonId) formData.append("lessonId", lessonId);
 
+  savingMaterial.value = true;
   try {
-    const res = await previewImportApi(formData);
-    previewChapters.value = res.data; // List<ParsedChapter>
-  } catch (err) {
-    console.error("Lỗi đọc file PDF:", err);
-    alert(err.response?.data?.message || "Không đọc được file PDF");
-  } finally {
-    previewing.value = false;
-  }
-}
-
-async function confirmImport() {
-  confirming.value = true;
-  try {
-    await confirmImportApi(materialForm.bookId, previewChapters.value);
+    await uploadMaterialApi(formData);
     materialDialog.value = false;
-    previewChapters.value = null;
     await fetchBooks();
   } catch (err) {
-    console.error("Lỗi lưu chương/bài học:", err);
-    alert(err.response?.data?.message || "Không thể lưu dữ liệu");
+    console.error("Lỗi tải lên file PDF:", err);
+    alert(err.response?.data?.message || "Không thể tải lên file");
   } finally {
-    confirming.value = false;
+    savingMaterial.value = false;
   }
 }
 </script>

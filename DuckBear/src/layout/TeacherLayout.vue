@@ -199,6 +199,11 @@ const menuSections = [
       },
     ],
   },
+  {
+    label: "Xem sách (lật trang)",
+    icon: "mdi-book-open-variant",
+    to: { name: "teacher-book-viewer" }, 
+  },
 ];
 
 // Accordion state: all sections open by default
