@@ -1,5 +1,9 @@
 import api from "@/service/http";
 
+export function getLessonsApi() {
+  return api.get("/lesson-management");
+}
+
 export function getLessonsByChapterApi(chapterId) {
   return api.get(`/lesson-management/by-chapter/${chapterId}`);
 }

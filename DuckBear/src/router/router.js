@@ -17,7 +17,13 @@ import Classesview from "@/view/Classes/Classesview.vue";
 import Logsview from "@/view/Logs/Logsview.vue";
 import Profileview from "@/view/Profile/Profileview.vue";
 import BookFlipViewer from "@/view/Book/BookFlipViewer.vue";
-import { components } from "vuetify/dist/vuetify.js";
+import StudentDashboard from "@/view/Student/StudentDashboard.vue";
+import StudentAssignmentView from "@/view/Student/StudentAssignmentView.vue";
+import StudentHistoryView from "@/view/Student/StudentHistoryView.vue";
+import StudentResultView from "@/view/Student/StudentResultView.vue";
+import StudentResourcesView from "@/view/Student/StudentResourcesView.vue";
+import StudentProfileView from "@/view/Student/StudentProfileView.vue";
+import StudentAiView from "@/view/Student/StudentAiView.vue";
 
 const routes = [
   {
@@ -53,6 +59,57 @@ const routes = [
     path: "/login/teacher",
     name: "login-teacher",
     component: LoginFormTeacher,
+  },
+  {
+    path: "/student/dashboard",
+    name: "student-dashboard",
+    component: StudentDashboard,
+    meta: { requiresAuth: true, role: "student" },
+  },
+  {
+    path: "/student/assignments/:id",
+    name: "student-assignment",
+    component: StudentAssignmentView,
+    props: true,
+    meta: { requiresAuth: true, role: "student" },
+  },
+  {
+    path: "/student/history",
+    name: "student-history",
+    component: StudentHistoryView,
+    meta: { requiresAuth: true, role: "student" },
+  },
+  {
+    path: "/student/result/:submissionId",
+    name: "student-result",
+    component: StudentResultView,
+    props: true,
+    meta: { requiresAuth: true, role: "student" },
+  },
+  {
+    path: "/student/resources",
+    name: "student-resources",
+    component: StudentResourcesView,
+    meta: { requiresAuth: true, role: "student" },
+  },
+  {
+    path: "/student/profile",
+    name: "student-profile",
+    component: StudentProfileView,
+    meta: { requiresAuth: true, role: "student" },
+  },
+  {
+    path: "/student/ai",
+    name: "student-ai",
+    component: StudentAiView,
+    meta: { requiresAuth: true, role: "student" },
+  },
+  {
+    path: "/student/book-viewer",
+    name: "student-book-viewer",
+    components: { default: BookFlipViewer },
+    props: (route) => ({ bookId: route.query.bookId }),
+    meta: { requiresAuth: true, role: "student" },
   },
   {
     path: "/teacher",
@@ -137,6 +194,23 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach((to) => {
+  const token = localStorage.getItem("accessToken");
+  const role = localStorage.getItem("role");
+
+  if (to.meta.requiresAuth && !token) {
+    return { name: "login" };
+  }
+
+  if (to.meta.role && role !== to.meta.role) {
+    return role === "student"
+      ? { name: "student-dashboard" }
+      : { name: "teacher-books" };
+  }
+
+  return true;
 });
 
 export default router;

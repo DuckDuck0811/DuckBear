@@ -276,6 +276,11 @@
               :rules="[(v) => !!v || 'Vui lòng chọn file']"
               show-size
             />
+
+            <div v-if="parsedPreview" class="preview-output">
+              <div class="field-label">Dữ liệu đọc được</div>
+              <pre>{{ formattedPreview }}</pre>
+            </div>
           </v-form>
         </v-card-text>
 
@@ -295,7 +300,7 @@
             :loading="savingMaterial"
             @click="submitMaterial"
           >
-            Tải lên
+            Đọc mục lục
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -312,8 +317,8 @@ import {
   createBookApi,
   updateBookApi,
   deleteBookApi,
+  previewImportApi,
 } from "@/api/book";
-import { uploadMaterialApi } from "@/api/material";
 import { getSubjectsApi } from "@/api/subject";
 
 const router = useRouter();
@@ -462,6 +467,11 @@ const materialFormRef = ref(null);
 const savingMaterial = ref(false);
 const materialForm = reactive({ title: "", file: null, bookId: null });
 const importTarget = ref(null);
+const parsedPreview = ref(null);
+
+const formattedPreview = computed(() =>
+  JSON.stringify(parsedPreview.value, null, 2),
+);
 
 const importTargetLabel = computed(() => {
   if (!importTarget.value) return "";
@@ -479,6 +489,7 @@ function openImportMaterial(target) {
   materialForm.title = "";
   materialForm.file = null;
   materialForm.bookId = target.book?.id || null;
+  parsedPreview.value = null;
   materialDialog.value = true;
 }
 
@@ -486,39 +497,25 @@ async function submitMaterial() {
   const { valid } = await materialFormRef.value.validate();
   if (!valid) return;
 
-  const bookId =
-    importTarget.value?.type === "book" ? materialForm.bookId : null;
-  const chapterId =
-    importTarget.value?.type === "chapter"
-      ? importTarget.value.chapter.id
-      : null;
-  const lessonId =
-    importTarget.value?.type === "lesson" ? importTarget.value.lesson.id : null;
-
-  if (importTarget.value?.type === "book" && !bookId) {
-    alert("Vui lòng chọn sách trước khi tải lên");
+  if (importTarget.value?.type !== "book") {
+    alert("Chức năng đọc mục lục hiện chỉ áp dụng cho toàn bộ sách");
     return;
   }
 
   const fileToUpload = Array.isArray(materialForm.file)
     ? materialForm.file[0]
     : materialForm.file;
-
   const formData = new FormData();
-  formData.append("title", materialForm.title);
   formData.append("file", fileToUpload);
-  if (bookId) formData.append("bookId", bookId);
-  if (chapterId) formData.append("chapterId", chapterId);
-  if (lessonId) formData.append("lessonId", lessonId);
 
   savingMaterial.value = true;
   try {
-    await uploadMaterialApi(formData);
-    materialDialog.value = false;
-    await fetchBooks();
+    const response = await previewImportApi(formData);
+    parsedPreview.value = response.data;
+    console.log("Dữ liệu mục lục đọc được:", response.data);
   } catch (err) {
-    console.error("Lỗi tải lên file PDF:", err);
-    alert(err.response?.data?.message || "Không thể tải lên file");
+    console.error("Lỗi đọc mục lục PDF:", err);
+    alert(err.response?.data?.message || "Không thể đọc mục lục PDF");
   } finally {
     savingMaterial.value = false;
   }
