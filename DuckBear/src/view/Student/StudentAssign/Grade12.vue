@@ -519,8 +519,9 @@ onUnmounted(() => {
 }
 
 .dash-screen {
-  max-width: 1060px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: none;
+  margin: 0;
 }
 
 .dash-header {

@@ -1,0 +1,43 @@
+.student-shell .v-container,
+.history-shell .v-container,
+.profile-shell .v-container,
+.resources-shell .v-container,
+.result-shell .v-container,
+.assignment-shell .v-container,
+.ai-shell .v-container,
+.class-detail-shell .v-container {
+  width: 100%;
+  max-width: none !important;
+  padding-left: clamp(20px, 3vw, 48px);
+  padding-right: clamp(20px, 3vw, 48px);
+}
+
+.student-shell .masthead-inner {
+  width: 100%;
+  max-width: none;
+  padding-left: clamp(20px, 3vw, 48px);
+  padding-right: clamp(20px, 3vw, 48px);
+}
+
+.gv {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding-left: clamp(20px, 3vw, 48px);
+  padding-right: clamp(20px, 3vw, 48px);
+}
+
+@media (max-width: 600px) {
+  .student-shell .v-container,
+  .history-shell .v-container,
+  .profile-shell .v-container,
+  .resources-shell .v-container,
+  .result-shell .v-container,
+  .assignment-shell .v-container,
+  .ai-shell .v-container,
+  .class-detail-shell .v-container,
+  .gv {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}

@@ -1,38 +1,46 @@
 <template>
-  <div class="lessons-view">
-    <div class="view-header">
+  <div class="t-page-wrap">
+    <!-- Header -->
+    <div class="t-page-heading">
       <div>
-        <div class="breadcrumb" @click="goBack">
-          <v-icon icon="mdi-arrow-left" size="18" />
+        <div class="t-breadcrumb" @click="goBack">
+          <v-icon icon="mdi-arrow-left" size="16" />
           Sách / Môn học
         </div>
-        <h1 class="view-title">{{ book?.title || "Đang tải..." }}</h1>
-        <p class="view-subtitle" v-if="book">
+        <h1 class="t-page-title">{{ book?.title || "Đang tải..." }}</h1>
+        <p v-if="book" class="t-page-subtitle">
           {{ book.subjectName }} · Lớp {{ book.gradeLevel }}
         </p>
       </div>
       <v-btn
-        color="#1B2A4A"
+        color="primary"
         variant="flat"
         prepend-icon="mdi-plus"
         class="text-none"
+        style="border-radius: 8px; font-weight: 600; flex-shrink: 0"
         @click="openCreateChapter"
       >
         Thêm chương
       </v-btn>
     </div>
 
+    <!-- Loading -->
+    <div v-if="loading" class="text-center py-12">
+      <v-progress-circular indeterminate color="primary" />
+    </div>
+
     <!-- Empty state -->
-    <div v-if="!loading && chapters.length === 0" class="empty-state">
-      <v-icon icon="mdi-format-list-numbered" size="48" color="#c7cbd6" />
-      <p class="empty-title">Chưa có chương nào</p>
-      <p class="empty-desc">
+    <div v-else-if="chapters.length === 0" class="t-empty-state">
+      <v-icon icon="mdi-format-list-numbered" size="48" color="#9CA3AF" class="t-empty-icon" />
+      <p class="t-empty-title">Chưa có chương nào</p>
+      <p class="t-empty-desc">
         Thêm chương đầu tiên để bắt đầu tạo bài học và câu hỏi.
       </p>
       <v-btn
-        color="#1B2A4A"
+        color="primary"
         variant="flat"
-        class="text-none mt-2"
+        class="text-none"
+        style="border-radius: 8px"
         @click="openCreateChapter"
       >
         Thêm chương
@@ -46,7 +54,7 @@
         :key="chapter.id"
         @group:selected="({ value }) => value && loadLessons(chapter)"
       >
-        <v-expansion-panel-title>
+        <v-expansion-panel-title class="chapter-panel-title">
           <div class="chapter-title-row">
             <span class="chapter-index">{{ chapter.orderIndex }}</span>
             <span class="chapter-name">{{ chapter.title }}</span>
@@ -56,12 +64,14 @@
               icon="mdi-pencil-outline"
               variant="text"
               size="small"
+              color="secondary"
               @click.stop="openEditChapter(chapter)"
             />
             <v-btn
               icon="mdi-delete-outline"
               variant="text"
               size="small"
+              color="error"
               @click.stop="confirmDeleteChapter(chapter)"
             />
           </template>
@@ -69,7 +79,7 @@
 
         <v-expansion-panel-text>
           <div v-if="chapter.loadingLessons" class="lesson-loading">
-            <v-progress-circular indeterminate size="20" color="#1B2A4A" />
+            <v-progress-circular indeterminate size="20" color="primary" />
           </div>
 
           <div v-else>
@@ -78,19 +88,21 @@
               :key="lesson.id"
               class="lesson-row"
             >
-              <v-icon icon="mdi-book-open-outline" size="18" color="#8A93A6" />
+              <v-icon icon="mdi-book-open-outline" size="17" color="#9CA3AF" />
               <span class="lesson-name">{{ lesson.title }}</span>
               <v-spacer />
               <v-btn
                 icon="mdi-pencil-outline"
                 variant="text"
                 size="x-small"
+                color="secondary"
                 @click="openEditLesson(chapter, lesson)"
               />
               <v-btn
                 icon="mdi-delete-outline"
                 variant="text"
                 size="x-small"
+                color="error"
                 @click="confirmDeleteLesson(chapter, lesson)"
               />
             </div>
@@ -103,7 +115,8 @@
               variant="text"
               class="text-none mt-2"
               prepend-icon="mdi-plus"
-              color="#1B2A4A"
+              color="primary"
+              size="small"
               @click="openCreateLesson(chapter)"
             >
               Thêm bài học
@@ -115,13 +128,13 @@
 
     <!-- Chapter dialog -->
     <v-dialog v-model="chapterDialog" max-width="440">
-      <v-card class="pa-2">
-        <v-card-title class="dialog-title">
+      <v-card class="pa-1" style="border-radius: 14px">
+        <v-card-title class="t-dialog-title px-5 pt-5 pb-2">
           {{ editingChapter ? "Sửa chương" : "Thêm chương mới" }}
         </v-card-title>
-        <v-card-text>
+        <v-card-text class="px-5">
           <v-form ref="chapterFormRef">
-            <div class="field-label">Tên chương</div>
+            <div class="t-field-label">Tên chương</div>
             <v-text-field
               v-model="chapterForm.title"
               variant="outlined"
@@ -130,7 +143,7 @@
               :rules="[(v) => !!v || 'Không được để trống']"
               class="mb-3"
             />
-            <div class="field-label">Thứ tự</div>
+            <div class="t-field-label">Thứ tự</div>
             <v-text-field
               v-model.number="chapterForm.orderIndex"
               type="number"
@@ -140,19 +153,18 @@
             />
           </v-form>
         </v-card-text>
-        <v-card-actions class="pa-4 pt-0">
+        <v-card-actions class="px-5 pb-4 pt-2">
           <v-spacer />
-          <v-btn variant="text" class="text-none" @click="chapterDialog = false"
-            >Hủy</v-btn
-          >
+          <v-btn variant="text" class="text-none" color="secondary" @click="chapterDialog = false">Hủy</v-btn>
           <v-btn
-            color="#1B2A4A"
+            color="primary"
             variant="flat"
             class="text-none"
+            style="border-radius: 8px; font-weight: 600"
             :loading="savingChapter"
             @click="saveChapter"
           >
-            {{ editingChapter ? "Lưu" : "Thêm chương" }}
+            {{ editingChapter ? "Lưu thay đổi" : "Thêm chương" }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -160,13 +172,13 @@
 
     <!-- Lesson dialog -->
     <v-dialog v-model="lessonDialog" max-width="440">
-      <v-card class="pa-2">
-        <v-card-title class="dialog-title">
+      <v-card class="pa-1" style="border-radius: 14px">
+        <v-card-title class="t-dialog-title px-5 pt-5 pb-2">
           {{ editingLesson ? "Sửa bài học" : "Thêm bài học mới" }}
         </v-card-title>
-        <v-card-text>
+        <v-card-text class="px-5">
           <v-form ref="lessonFormRef">
-            <div class="field-label">Tên bài học</div>
+            <div class="t-field-label">Tên bài học</div>
             <v-text-field
               v-model="lessonForm.title"
               variant="outlined"
@@ -175,7 +187,7 @@
               :rules="[(v) => !!v || 'Không được để trống']"
               class="mb-3"
             />
-            <div class="field-label">Thứ tự</div>
+            <div class="t-field-label">Thứ tự</div>
             <v-text-field
               v-model.number="lessonForm.orderIndex"
               type="number"
@@ -185,59 +197,54 @@
             />
           </v-form>
         </v-card-text>
-        <v-card-actions class="pa-4 pt-0">
+        <v-card-actions class="px-5 pb-4 pt-2">
           <v-spacer />
-          <v-btn variant="text" class="text-none" @click="lessonDialog = false"
-            >Hủy</v-btn
-          >
+          <v-btn variant="text" class="text-none" color="secondary" @click="lessonDialog = false">Hủy</v-btn>
           <v-btn
-            color="#1B2A4A"
+            color="primary"
             variant="flat"
             class="text-none"
+            style="border-radius: 8px; font-weight: 600"
             :loading="savingLesson"
             @click="saveLesson"
           >
-            {{ editingLesson ? "Lưu" : "Thêm bài học" }}
+            {{ editingLesson ? "Lưu thay đổi" : "Thêm bài học" }}
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
-    <!-- Delete confirm (dùng chung cho chapter/lesson) -->
-    <v-dialog v-model="deleteDialog" max-width="380">
-      <v-card class="pa-2">
-        <v-card-title class="dialog-title">{{
-          deleteTarget?.label
-        }}</v-card-title>
-        <v-card-text class="text-body-2" style="color: #6b7383">
+    <!-- Delete confirm -->
+    <v-dialog v-model="deleteDialog" max-width="400">
+      <v-card class="pa-1" style="border-radius: 14px">
+        <v-card-title class="t-dialog-title px-5 pt-5 pb-2">{{ deleteTarget?.label }}</v-card-title>
+        <v-card-text class="px-5" style="color: #6b7280; font-size: 14px">
           {{ deleteTarget?.message }}
         </v-card-text>
-        <v-card-actions class="pa-4 pt-0">
+        <v-card-actions class="px-5 pb-4 pt-2">
           <v-spacer />
-          <v-btn variant="text" class="text-none" @click="deleteDialog = false"
-            >Hủy</v-btn
-          >
+          <v-btn variant="text" class="text-none" color="secondary" @click="deleteDialog = false">Hủy</v-btn>
           <v-btn
             color="error"
             variant="flat"
             class="text-none"
+            style="border-radius: 8px; font-weight: 600"
             @click="executeDelete"
-            >Xóa</v-btn
-          >
+          >Xóa</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
     <!-- Import material dialog -->
     <v-dialog v-model="materialDialog" max-width="460">
-      <v-card class="pa-2">
-        <v-card-title class="dialog-title">
+      <v-card class="pa-1" style="border-radius: 14px">
+        <v-card-title class="t-dialog-title px-5 pt-5 pb-1">
           Nhập file PDF
           <div class="import-target-label">{{ importTargetLabel }}</div>
         </v-card-title>
-        <v-card-text>
+        <v-card-text class="px-5">
           <v-form ref="materialFormRef">
-            <div class="field-label">Tiêu đề tài liệu</div>
+            <div class="t-field-label">Tiêu đề tài liệu</div>
             <v-text-field
               v-model="materialForm.title"
               variant="outlined"
@@ -246,7 +253,7 @@
               :rules="[(v) => !!v || 'Không được để trống']"
               class="mb-3"
             />
-            <div class="field-label">File PDF</div>
+            <div class="t-field-label">File PDF</div>
             <v-file-input
               v-model="materialForm.file"
               variant="outlined"
@@ -260,18 +267,14 @@
             />
           </v-form>
         </v-card-text>
-        <v-card-actions class="pa-4 pt-0">
+        <v-card-actions class="px-5 pb-4 pt-2">
           <v-spacer />
+          <v-btn variant="text" class="text-none" color="secondary" @click="materialDialog = false">Hủy</v-btn>
           <v-btn
-            variant="text"
-            class="text-none"
-            @click="materialDialog = false"
-            >Hủy</v-btn
-          >
-          <v-btn
-            color="#1B2A4A"
+            color="primary"
             variant="flat"
             class="text-none"
+            style="border-radius: 8px; font-weight: 600"
             :loading="savingMaterial"
             @click="saveMaterial"
           >
@@ -355,7 +358,7 @@ onMounted(() => {
 });
 
 function goBack() {
-  router.push({ name: "teacher-books" }); // đổi lại đúng tên route trang Sách của bro nếu khác
+  router.push({ name: "teacher-books" });
 }
 
 /* ---------- Chapter CRUD ---------- */
@@ -464,7 +467,7 @@ const materialDialog = ref(false);
 const materialFormRef = ref(null);
 const savingMaterial = ref(false);
 const materialForm = reactive({ title: "", file: null });
-const importTarget = ref(null); // { type: 'book'|'chapter'|'lesson', chapter, lesson }
+const importTarget = ref(null);
 
 const importTargetLabel = computed(() => {
   if (!importTarget.value) return "";
@@ -514,7 +517,7 @@ async function saveMaterial() {
 
 /* ---------- Delete (dùng chung) ---------- */
 const deleteDialog = ref(false);
-const deleteTarget = ref(null); // { type: 'chapter'|'lesson', data, chapter, label, message }
+const deleteTarget = ref(null);
 
 function confirmDeleteChapter(chapter) {
   deleteTarget.value = {
@@ -557,67 +560,15 @@ async function executeDelete() {
 </script>
 
 <style scoped>
-.lessons-view {
-  padding: 28px;
-}
-
-.view-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 13px;
-  color: #8a93a6;
-  cursor: pointer;
-  margin-bottom: 6px;
-}
-
-.breadcrumb:hover {
-  color: #1b2a4a;
-}
-
-.view-title {
-  font-size: 22px;
-  font-weight: 700;
-  color: #1a2540;
-}
-
-.view-subtitle {
-  font-size: 13px;
-  color: #8a93a6;
-  margin-top: 2px;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 64px 24px;
-  background: #ffffff;
-  border: 1px dashed #d9dce5;
-  border-radius: 16px;
-}
-
-.empty-title {
-  font-weight: 600;
-  color: #1a2540;
-  margin-top: 12px;
-}
-
-.empty-desc {
-  font-size: 13px;
-  color: #8a93a6;
-  max-width: 360px;
-  margin: 6px auto 0;
-}
-
+/* Chapter panels */
 .chapter-panels {
-  border-radius: 14px;
+  border-radius: 12px;
   overflow: hidden;
+  border: 1px solid #e8ecf4;
+}
+
+.chapter-panel-title :deep(.v-expansion-panel-title__overlay) {
+  background: transparent;
 }
 
 .chapter-title-row {
@@ -627,28 +578,30 @@ async function executeDelete() {
 }
 
 .chapter-index {
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
-  background: #eef0f6;
-  color: #4c5670;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: #eef3ff;
+  color: #4f7cff;
   font-size: 12px;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .chapter-name {
   font-weight: 600;
-  color: #1a2540;
+  color: #1a1d2e;
   font-size: 14px;
 }
 
+/* Lesson rows */
 .lesson-loading {
   display: flex;
   justify-content: center;
-  padding: 12px;
+  padding: 16px;
 }
 
 .lesson-row {
@@ -656,36 +609,34 @@ async function executeDelete() {
   align-items: center;
   gap: 8px;
   padding: 8px 4px;
-  border-bottom: 1px solid #f0f1f5;
+  border-bottom: 1px solid #f0f2f8;
+  border-radius: 6px;
+  transition: background 0.12s;
+}
+
+.lesson-row:hover {
+  background: #fafbff;
+}
+
+.lesson-row:last-of-type {
+  border-bottom: none;
 }
 
 .lesson-name {
   font-size: 13.5px;
-  color: #2d3650;
+  color: #374151;
 }
 
 .lesson-empty {
   font-size: 13px;
-  color: #8a93a6;
+  color: #9ca3af;
   padding: 8px 4px;
-}
-
-.dialog-title {
-  font-weight: 700;
-  color: #1a2540;
-}
-
-.field-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: #1a2540;
-  margin-bottom: 4px;
 }
 
 .import-target-label {
   font-size: 12px;
   font-weight: 400;
-  color: #8a93a6;
+  color: #9ca3af;
   margin-top: 2px;
 }
 </style>

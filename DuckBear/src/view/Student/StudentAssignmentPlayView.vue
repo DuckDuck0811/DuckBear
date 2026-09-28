@@ -70,12 +70,18 @@ const normalizedGrade = ref(null);
 
 // Map "khối lớp" -> component tương ứng (lazy-load, chỉ tải file cần dùng)
 const GRADE_STYLE_MAP = {
-  1: defineAsyncComponent(() => import("./styles/AssignmentPlayGrade1.vue")),
-  2: defineAsyncComponent(() => import("./styles/AssignmentPlayGrade2.vue")),
-  3: defineAsyncComponent(() => import("./styles/AssignmentPlayGrade3.vue")),
-  4: defineAsyncComponent(() => import("./styles/AssignmentPlayGrade4.vue")),
-  5: defineAsyncComponent(() => import("./styles/AssignmentPlayGrade5.vue")),
-  // 6..12: sẽ bổ sung khi có giao diện cho THCS / THPT
+  1: defineAsyncComponent(() => import("./StudentAssign/Grade1.vue")),
+  2: defineAsyncComponent(() => import("./StudentAssign/Grade2.vue")),
+  3: defineAsyncComponent(() => import("./StudentAssign/Grade3.vue")),
+  4: defineAsyncComponent(() => import("./StudentAssign/Grade4.vue")),
+  5: defineAsyncComponent(() => import("./StudentAssign/Grade5.vue")),
+  6: defineAsyncComponent(() => import("./StudentAssign/Grade6.vue")),
+  7: defineAsyncComponent(() => import("./StudentAssign/Grade7.vue")),
+  8: defineAsyncComponent(() => import("./StudentAssign/Grade8.vue")),
+  9: defineAsyncComponent(() => import("./StudentAssign/Grade9.vue")),
+  10: defineAsyncComponent(() => import("./StudentAssign/Grade10.vue")),
+  11: defineAsyncComponent(() => import("./StudentAssign/Grade11.vue")),
+  12: defineAsyncComponent(() => import("./StudentAssign/Grade12.vue")),
 };
 
 const resolvedComponent = computed(() => {
@@ -105,6 +111,19 @@ onMounted(async () => {
     return;
   }
 
+  const fromClassName = normalizeGradeLevel(
+    route.query.className ||
+      route.query.classRoomName ||
+      route.query.classroomName ||
+      route.query.class_name ||
+      route.query.groupName,
+  );
+  if (fromClassName) {
+    normalizedGrade.value = fromClassName;
+    resolving.value = false;
+    return;
+  }
+
   // 2) Dự phòng: gọi API chỉ-đọc để lấy gradeLevel từ thông tin bài tập/lớp học.
   //    Lưu ý: KHÔNG gọi startSubmissionApi ở đây.
   //    Điều chỉnh đường dẫn field bên dưới cho khớp với response thật của bạn,
@@ -117,6 +136,8 @@ onMounted(async () => {
       info.gradeLevel ??
       info.classGradeLevel ??
       info.classRoom?.gradeLevel ??
+      info.className ??
+      info.classRoom?.name ??
       null;
 
     normalizedGrade.value = normalizeGradeLevel(rawGrade);
@@ -136,12 +157,11 @@ onMounted(async () => {
 <style scoped>
 .resolver-shell {
   min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
 }
 .resolver-loading,
 .resolver-error {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;

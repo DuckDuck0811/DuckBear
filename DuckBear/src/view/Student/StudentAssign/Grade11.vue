@@ -392,8 +392,9 @@ onUnmounted(() => {
 }
 
 .zen-play {
-  max-width: 640px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: none;
+  margin: 0;
 }
 
 .zen-topbar {

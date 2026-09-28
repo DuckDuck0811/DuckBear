@@ -366,8 +366,9 @@ onMounted(async () => {
 }
 
 .play-screen {
-  max-width: 480px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: none;
+  margin: 0;
 }
 .top-row {
   display: flex;

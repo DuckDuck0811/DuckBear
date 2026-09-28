@@ -9,7 +9,9 @@
       color="#ffffff"
     >
       <div class="drawer-brand" :class="{ 'justify-center': rail }">
-        <v-icon icon="mdi-book-open-page-variant" size="26" color="#6366F1" />
+        <div class="brand-logo">
+          <v-icon icon="mdi-book-open-page-variant" size="22" color="#4F7CFF" />
+        </div>
         <span v-if="!rail" class="brand-text">Lớp học của tôi</span>
         <v-spacer v-if="!rail" />
         <v-btn
@@ -17,36 +19,37 @@
           icon="mdi-chevron-left"
           variant="text"
           size="small"
-          color="#8A8DA6"
+          color="#9CA3AF"
           @click="rail = true"
         />
       </div>
+
       <v-btn
         v-if="rail"
         icon="mdi-chevron-right"
         variant="text"
         size="small"
-        color="#8A8DA6"
+        color="#9CA3AF"
         class="rail-expand-btn"
         @click="rail = false"
       />
 
       <div class="drawer-scroll">
-        <v-list nav density="comfortable" class="mt-2">
+        <v-list nav density="comfortable" class="mt-1 drawer-list">
           <div
             v-for="section in menuSections"
             :key="section.title"
             class="menu-section"
           >
             <div
-              v-if="!rail"
+              v-if="!rail && section.title"
               class="section-label"
               @click="toggleSection(section.title)"
             >
               <span>{{ section.title }}</span>
               <v-icon
                 icon="mdi-chevron-down"
-                size="16"
+                size="15"
                 class="section-caret"
                 :class="{
                   'section-caret--collapsed': !openSections[section.title],
@@ -57,7 +60,7 @@
               <div v-show="rail || openSections[section.title]">
                 <v-list-item
                   v-for="item in section.items"
-                  :key="item.to"
+                  :key="item.to.name"
                   :to="item.to"
                   :prepend-icon="item.icon"
                   :title="item.label"
@@ -76,43 +79,46 @@
       </div>
     </v-navigation-drawer>
 
-    <!-- Header -->
-    <v-app-bar flat color="white" class="teacher-appbar" height="64">
+    <!-- Appbar -->
+    <v-app-bar flat color="white" class="teacher-appbar" height="60">
       <v-app-bar-title class="page-title">{{ pageTitle }}</v-app-bar-title>
       <v-spacer />
 
-      <v-btn icon variant="text" class="mr-1">
-        <v-badge dot color="#6366F1" offset-x="2" offset-y="2">
-          <v-icon icon="mdi-bell-outline" color="#8A8DA6" />
+      <v-btn icon variant="text" class="mr-1" size="small">
+        <v-badge dot color="#4F7CFF" offset-x="2" offset-y="2">
+          <v-icon icon="mdi-bell-outline" color="#9CA3AF" size="20" />
         </v-badge>
       </v-btn>
 
       <v-menu location="bottom end">
         <template #activator="{ props }">
           <div class="teacher-chip" v-bind="props">
-            <v-avatar size="36" color="#6366F1">
+            <v-avatar size="32" color="#4F7CFF">
               <span class="avatar-initial">{{ initials }}</span>
             </v-avatar>
-            <div class="teacher-meta">
+            <div class="teacher-meta" v-if="!isMobile">
               <span class="teacher-name">{{ teacher.name }}</span>
               <span class="teacher-role">Giáo viên</span>
             </div>
-            <v-icon icon="mdi-chevron-down" size="18" color="#8A8DA6" />
+            <v-icon icon="mdi-chevron-down" size="16" color="#9CA3AF" />
           </div>
         </template>
-        <v-list density="compact" min-width="180">
+        <v-list density="compact" min-width="190" class="menu-dropdown">
           <v-list-item
             prepend-icon="mdi-account-outline"
             title="Hồ sơ cá nhân"
             :to="{ name: 'teacher-profile' }"
           />
+          <v-divider class="my-1" />
           <v-list-item
             prepend-icon="mdi-logout"
             title="Đăng xuất"
+            class="text-error"
             @click="$emit('logout')"
           />
         </v-list>
       </v-menu>
+      <div class="mr-2" />
     </v-app-bar>
 
     <!-- Content -->
@@ -125,6 +131,7 @@
 <script setup>
 import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
+import { useDisplay } from "vuetify";
 
 const props = defineProps({
   teacher: {
@@ -137,6 +144,7 @@ defineEmits(["logout"]);
 const drawer = ref(true);
 const rail = ref(false);
 const route = useRoute();
+const { mobile: isMobile } = useDisplay();
 
 const menuSections = [
   {
@@ -173,8 +181,8 @@ const menuSections = [
         to: { name: "teacher-assignments-create" },
       },
       {
-        label: "Sinh đề tổng hợp",
-        icon: "mdi-shuffle-variant",
+        label: "Sinh đề AI",
+        icon: "mdi-creation",
         to: { name: "teacher-assignments-generate" },
       },
       {
@@ -199,14 +207,8 @@ const menuSections = [
       },
     ],
   },
-  {
-    label: "Xem sách (lật trang)",
-    icon: "mdi-book-open-variant",
-    to: { name: "teacher-book-viewer" }, 
-  },
 ];
 
-// Accordion state: all sections open by default
 const openSections = ref(
   Object.fromEntries(menuSections.map((s) => [s.title, true])),
 );
@@ -226,25 +228,55 @@ const initials = computed(() => {
 </script>
 
 <style scoped>
+/* ---- Drawer ---- */
 .teacher-drawer {
-  border-right: 1px solid #ececf3;
-  position: relative;
+  border-right: 1px solid #e8ecf4;
 }
 
 .teacher-drawer :deep(.v-navigation-drawer__content) {
-  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
   overflow: hidden;
 }
 
-.teacher-drawer :deep(.v-list) {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: visible;
+/* ---- Brand ---- */
+.drawer-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 14px 14px;
+  flex: 0 0 auto;
+  border-bottom: 1px solid #f0f2f8;
+  margin-bottom: 4px;
 }
 
+.brand-logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: #eef3ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.brand-text {
+  color: #1a1d2e;
+  font-weight: 700;
+  font-size: 15px;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: -0.1px;
+}
+
+.rail-expand-btn {
+  display: flex;
+  margin: 10px auto 0;
+  flex: 0 0 auto;
+}
+
+/* ---- Scroll area ---- */
 .drawer-scroll {
   flex: 1 1 auto;
   min-height: 0;
@@ -255,66 +287,50 @@ const initials = computed(() => {
 }
 
 .drawer-scroll::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 .drawer-scroll::-webkit-scrollbar-thumb {
-  background: #d7d8e6;
-  border-radius: 3px;
+  background: #e0e4ef;
+  border-radius: 4px;
 }
 
 .drawer-scroll::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.drawer-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 18px 16px;
-  flex: 0 0 auto;
+/* ---- List ---- */
+.drawer-list {
+  padding: 4px 8px;
 }
 
-.brand-text {
-  color: #4338ca;
-  font-weight: 700;
-  font-size: 16px;
-  letter-spacing: 0.1px;
-}
-
-.rail-expand-btn {
-  display: flex;
-  margin: 8px auto 0;
-  flex: 0 0 auto;
-}
-
+/* ---- Section label ---- */
 .menu-section {
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .section-label {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: #9a9caf;
-  font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
-    sans-serif;
-  font-size: 12px;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.4px;
-  padding: 14px 16px 8px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #9ca3af;
+  padding: 12px 10px 6px;
   cursor: pointer;
   user-select: none;
-  transition: color 0.15s ease;
+  transition: color 0.15s;
 }
 
 .section-label:hover {
-  color: #6366f1;
+  color: #4f7cff;
 }
 
 .section-caret {
-  color: #b7b9cc;
+  color: #c4c9d8;
   transition: transform 0.2s ease;
 }
 
@@ -322,84 +338,110 @@ const initials = computed(() => {
   transform: rotate(-90deg);
 }
 
+/* ---- Menu items ---- */
 .menu-item {
-  color: #4b4d63 !important;
-  margin: 2px 8px;
-  font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
-    sans-serif;
-  font-size: 14px;
+  color: #6b7280 !important;
+  margin: 1px 0;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 13.5px;
+  font-weight: 500;
+  border-radius: 8px !important;
 }
 
 .menu-item :deep(.v-icon) {
-  color: #9a9caf;
+  color: #9ca3af !important;
+  font-size: 18px !important;
 }
 
-/* Active item: light purple background, purple text/icon —
-    matches the "Sách / Môn học" state in the screenshot */
+.menu-item :deep(.v-list-item-title) {
+  font-size: 13.5px !important;
+  font-weight: 500;
+}
+
 .menu-item--active {
-  background: #eef0fe !important;
-  color: #4f46e5 !important;
-  font-weight: 600;
+  background: #eef3ff !important;
+  color: #4f7cff !important;
+  font-weight: 600 !important;
 }
 
 .menu-item--active :deep(.v-icon) {
-  color: #6366f1 !important;
+  color: #4f7cff !important;
 }
 
+.menu-item--active :deep(.v-list-item-title) {
+  font-weight: 600 !important;
+  color: #4f7cff !important;
+}
+
+/* ---- Appbar ---- */
 .teacher-appbar {
-  border-bottom: 1px solid #ececf3;
+  border-bottom: 1px solid #e8ecf4 !important;
 }
 
-.page-title {
-  font-weight: 700;
-  color: #1b1b2e;
-  font-size: 20px;
+.page-title :deep(.v-app-bar-title__content) {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-weight: 600;
+  font-size: 17px;
+  color: #1a1d2e;
+  letter-spacing: -0.1px;
 }
 
+/* ---- Teacher chip ---- */
 .teacher-chip {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 10px;
+  padding: 5px 8px;
   border-radius: 10px;
   cursor: pointer;
+  transition: background 0.15s;
 }
 
 .teacher-chip:hover {
-  background: #f4f5fb;
+  background: #f3f6ff;
 }
 
 .avatar-initial {
   color: #ffffff;
   font-weight: 700;
-  font-size: 13px;
+  font-size: 12px;
+  font-family: "Inter", sans-serif;
 }
 
 .teacher-meta {
   display: flex;
   flex-direction: column;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
 .teacher-name {
+  font-family: "Inter", sans-serif;
   font-size: 13px;
   font-weight: 600;
-  color: #1b1b1f;
+  color: #1a1d2e;
 }
 
 .teacher-role {
+  font-family: "Inter", sans-serif;
   font-size: 11px;
-  color: #8a8a92;
+  color: #9ca3af;
 }
 
+/* ---- Dropdown ---- */
+.menu-dropdown {
+  border: 1px solid #e8ecf4;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(20, 30, 80, 0.08);
+}
+
+/* ---- Main content ---- */
 .teacher-main {
-  background: #f8f8fc;
+  background: #f8f9fc;
 }
 
+/* ---- Illustration ---- */
 .drawer-illustration {
-  position: relative;
-  padding: 12px 12px 8px;
+  padding: 12px 10px 10px;
   pointer-events: none;
   margin-top: auto;
   flex: 0 0 auto;
@@ -409,6 +451,7 @@ const initials = computed(() => {
   width: 100%;
   height: auto;
   display: block;
-  opacity: 0.9;
+  opacity: 0.85;
+  border-radius: 10px;
 }
 </style>

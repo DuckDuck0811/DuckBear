@@ -377,8 +377,9 @@ onMounted(async () => {
 }
 
 .paper-screen {
-  max-width: 760px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: none;
+  margin: 0;
 }
 
 .paper-header {

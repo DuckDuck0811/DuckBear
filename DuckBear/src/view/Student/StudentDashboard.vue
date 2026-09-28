@@ -80,6 +80,23 @@
         <section class="section-block mb-10">
           <div class="section-heading">
             <div>
+              <h2>Thành tích học tập</h2>
+              <p class="section-sub">Điểm thưởng, chuỗi ngày học và huy hiệu của em.</p>
+            </div>
+            <v-btn
+              class="outline-action"
+              variant="outlined"
+              prepend-icon="mdi-trophy-outline"
+              @click="router.push({ name: 'student-gamification' })"
+              >Xem tất cả</v-btn
+            >
+          </div>
+          <GamificationWidget :user-id="authStore.userId" :show-detail-link="false" />
+        </section>
+
+        <section class="section-block mb-10">
+          <div class="section-heading">
+            <div>
               <h2>Lớp của em</h2>
               <p class="section-sub">Các lớp em đã tham gia.</p>
             </div>
@@ -101,7 +118,7 @@
             >
               <h3>{{ member.className }}</h3>
               <p>Đã tham gia {{ formatDate(member.joinedAt) }}</p>
-              <button class="text-link">
+              <button class="text-link" @click="openClass(member)">
                 Mở lớp <v-icon size="16">mdi-arrow-right</v-icon>
               </button>
             </article>
@@ -144,6 +161,13 @@
             >
               <v-icon size="22">mdi-robot-happy</v-icon>
               <span>AI hỗ trợ</span>
+            </button>
+            <button
+              class="tab-card tab-card--highlight"
+              @click="router.push({ name: 'student-gamification' })"
+            >
+              <v-icon size="22">mdi-trophy-outline</v-icon>
+              <span>Thành tích</span>
             </button>
           </div>
         </section>
@@ -192,7 +216,7 @@
               </div>
               <v-btn
                 class="primary-action row-action"
-                @click="startAssignment(assignment.id)"
+                @click="startAssignment(assignment)"
                 >Bắt đầu làm <v-icon end>mdi-arrow-right</v-icon></v-btn
               >
             </article>
@@ -247,6 +271,7 @@ import { useRouter } from "vue-router";
 import { useAuthStore } from "@/store/auth";
 import { getStudentAssignmentsApi } from "@/api/assignment";
 import { getClassesApi, getMyClassesApi, joinClassApi } from "@/api/class";
+import GamificationWidget from "@/components/GamificationWidget.vue";
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -268,8 +293,48 @@ function formatDate(value) {
   }).format(new Date(value));
 }
 
-function startAssignment(id) {
-  router.push({ name: "student-assignment", params: { id } });
+function inferGradeFromText(value) {
+  if (!value && value !== 0) return null;
+  const match = String(value).match(/\d+/);
+  if (!match) return null;
+  const grade = Number(match[0]);
+  return Number.isInteger(grade) && grade >= 1 && grade <= 12 ? grade : null;
+}
+
+function startAssignment(assignment) {
+  const className =
+    assignment?.className ||
+    assignment?.classRoomName ||
+    assignment?.classroomName ||
+    classes.value?.[0]?.className ||
+    "";
+
+  const gradeLevel = inferGradeFromText(className);
+
+  router.push({
+    name: "student-assignment-play",
+    params: { id: assignment.id },
+    query: {
+      gradeLevel: gradeLevel ?? undefined,
+      className,
+    },
+  });
+}
+
+// NEW: navigate to the class detail page. We pass classId (the id of the
+// class itself) as the route param, and forward the membership id + name
+// as query so the detail page can render instantly while it fetches fresh
+// data, and can still fall back gracefully if a dedicated detail endpoint
+// isn't available yet.
+function openClass(member) {
+  router.push({
+    name: "student-class-detail",
+    params: { id: member.classId ?? member.id },
+    query: {
+      className: member.className,
+      joinedAt: member.joinedAt,
+    },
+  });
 }
 
 function logout() {

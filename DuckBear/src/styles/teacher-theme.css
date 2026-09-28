@@ -1,0 +1,376 @@
+/* =============================================================
+   TEACHER THEME — CSS Variables + Shared Utility Classes
+   Áp dụng cho tất cả trang /teacher/*
+   ============================================================= */
+
+/* ---------- Import Font ---------- */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+/* ---------- Variables ---------- */
+:root {
+  /* Accent */
+  --t-accent: #4f7cff;
+  --t-accent-soft: #eef3ff;
+  --t-accent-hover: #3a68f0;
+  --t-accent-deep: #2d55d6;
+
+  /* Surfaces */
+  --t-bg: #f8f9fc;
+  --t-surface: #ffffff;
+  --t-surface-raised: #f3f6ff;
+
+  /* Borders */
+  --t-border: #e8ecf4;
+  --t-border-muted: #f0f2f8;
+
+  /* Text */
+  --t-text-primary: #1a1d2e;
+  --t-text-secondary: #6b7280;
+  --t-text-muted: #9ca3af;
+
+  /* Status */
+  --t-success: #22c55e;
+  --t-success-soft: #f0fdf4;
+  --t-warning: #f59e0b;
+  --t-warning-soft: #fffbeb;
+  --t-error: #ef4444;
+  --t-error-soft: #fef2f2;
+
+  /* Radius */
+  --t-radius-sm: 8px;
+  --t-radius-card: 12px;
+  --t-radius-lg: 16px;
+
+  /* Shadow */
+  --t-shadow-sm: 0 1px 3px rgba(20, 30, 80, 0.06), 0 1px 2px rgba(20, 30, 80, 0.04);
+  --t-shadow-card: 0 2px 8px rgba(20, 30, 80, 0.07), 0 1px 3px rgba(20, 30, 80, 0.04);
+  --t-shadow-hover: 0 8px 24px rgba(79, 124, 255, 0.12), 0 2px 8px rgba(20, 30, 80, 0.06);
+
+  /* Font */
+  --t-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+}
+
+/* ---------- Global reset for teacher scope ---------- */
+.teacher-scope,
+.v-application.teacher-scope * {
+  font-family: var(--t-font);
+}
+
+/* ---------- Page Wrap ---------- */
+.t-page-wrap {
+  padding: 28px 32px;
+  font-family: var(--t-font);
+}
+
+@media (max-width: 600px) {
+  .t-page-wrap {
+    padding: 16px;
+  }
+}
+
+/* ---------- Page Heading ---------- */
+.t-page-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.t-eyebrow {
+  font-family: var(--t-font);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--t-accent);
+  margin-bottom: 4px;
+}
+
+.t-page-title {
+  font-family: var(--t-font);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--t-text-primary);
+  line-height: 1.2;
+  margin: 0;
+}
+
+.t-page-subtitle {
+  font-family: var(--t-font);
+  font-size: 14px;
+  color: var(--t-text-secondary);
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+
+@media (max-width: 600px) {
+  .t-page-heading {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .t-page-title {
+    font-size: 22px;
+  }
+}
+
+/* ---------- Cards ---------- */
+.t-card {
+  border-radius: var(--t-radius-card) !important;
+  border: 1px solid var(--t-border) !important;
+  box-shadow: var(--t-shadow-card) !important;
+  background: var(--t-surface) !important;
+}
+
+.t-card-hover {
+  transition: box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.t-card-hover:hover {
+  box-shadow: var(--t-shadow-hover) !important;
+  transform: translateY(-2px);
+}
+
+/* ---------- Filter Bar ---------- */
+.t-filter-bar {
+  background: var(--t-surface) !important;
+  border: 1px solid var(--t-border) !important;
+  border-radius: var(--t-radius-card) !important;
+  box-shadow: var(--t-shadow-sm) !important;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+
+/* ---------- Stat Cards ---------- */
+.t-stat-card {
+  padding: 18px 20px;
+  border-radius: var(--t-radius-card) !important;
+  border: 1px solid var(--t-border) !important;
+  box-shadow: var(--t-shadow-sm) !important;
+  background: var(--t-surface) !important;
+}
+
+.t-stat-value {
+  font-family: var(--t-font);
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--t-accent);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.t-stat-label {
+  font-family: var(--t-font);
+  font-size: 13px;
+  color: var(--t-text-secondary);
+  font-weight: 500;
+}
+
+/* ---------- Tables ---------- */
+.t-table thead tr th {
+  background: var(--t-surface-raised) !important;
+  color: var(--t-text-secondary) !important;
+  font-family: var(--t-font);
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.3px;
+  border-bottom: 1px solid var(--t-border) !important;
+  padding: 10px 16px !important;
+}
+
+.t-table tbody tr:nth-child(even) td {
+  background: #fafbff;
+}
+
+.t-table tbody tr:hover td {
+  background: var(--t-accent-soft);
+}
+
+.t-table tbody tr td {
+  font-family: var(--t-font);
+  font-size: 14px;
+  color: var(--t-text-primary);
+  border-bottom: 1px solid var(--t-border-muted) !important;
+  padding: 10px 16px !important;
+}
+
+/* ---------- Badges / Chips ---------- */
+.t-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-family: var(--t-font);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.t-badge--success {
+  background: var(--t-success-soft);
+  color: #15803d;
+}
+
+.t-badge--warning {
+  background: var(--t-warning-soft);
+  color: #b45309;
+}
+
+.t-badge--error {
+  background: var(--t-error-soft);
+  color: #b91c1c;
+}
+
+.t-badge--accent {
+  background: var(--t-accent-soft);
+  color: var(--t-accent);
+}
+
+.t-badge--neutral {
+  background: #f3f4f6;
+  color: var(--t-text-secondary);
+}
+
+/* ---------- Form labels ---------- */
+.t-field-label {
+  font-family: var(--t-font);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--t-text-primary);
+  margin-bottom: 6px;
+}
+
+/* ---------- Empty State ---------- */
+.t-empty-state {
+  text-align: center;
+  padding: 64px 24px;
+  background: var(--t-surface);
+  border: 1.5px dashed var(--t-border);
+  border-radius: var(--t-radius-lg);
+}
+
+.t-empty-icon {
+  opacity: 0.35;
+}
+
+.t-empty-title {
+  font-family: var(--t-font);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--t-text-primary);
+  margin-top: 14px;
+  margin-bottom: 6px;
+}
+
+.t-empty-desc {
+  font-family: var(--t-font);
+  font-size: 13px;
+  color: var(--t-text-secondary);
+  max-width: 360px;
+  margin: 0 auto 16px;
+}
+
+/* ---------- Placeholder pages (under development) ---------- */
+.placeholder-view {
+  padding: 64px 24px;
+  text-align: center;
+  background: var(--t-surface);
+  border: 1.5px dashed var(--t-border);
+  border-radius: var(--t-radius-lg);
+  margin: 28px;
+  font-family: var(--t-font);
+}
+
+.placeholder-view .ph-icon {
+  opacity: 0.3;
+}
+
+.ph-title {
+  font-family: var(--t-font);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--t-text-primary);
+  margin-top: 14px;
+}
+
+.ph-desc {
+  font-family: var(--t-font);
+  font-size: 13px;
+  color: var(--t-text-secondary);
+  margin-top: 6px;
+}
+
+/* ---------- Dialog ---------- */
+.t-dialog-title {
+  font-family: var(--t-font);
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--t-text-primary);
+}
+
+/* ---------- Section tags ---------- */
+.t-tag {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--t-font);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: var(--t-surface-raised);
+  color: var(--t-text-secondary);
+}
+
+.t-tag--accent {
+  background: var(--t-accent-soft);
+  color: var(--t-accent);
+}
+
+.t-tag--grade {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+/* ---------- Breadcrumb ---------- */
+.t-breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--t-font);
+  font-size: 13px;
+  color: var(--t-text-muted);
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: color 0.15s;
+}
+
+.t-breadcrumb:hover {
+  color: var(--t-accent);
+}
+
+/* ---------- Vuetify overrides for teacher scope ---------- */
+
+/* v-btn primary */
+.t-btn-primary.v-btn {
+  background-color: var(--t-accent) !important;
+  color: #fff !important;
+  border-radius: var(--t-radius-sm) !important;
+  font-family: var(--t-font) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0 !important;
+}
+
+.t-btn-primary.v-btn:hover {
+  background-color: var(--t-accent-hover) !important;
+}
+
+/* v-tabs color */
+.t-tabs .v-tab--selected {
+  color: var(--t-accent) !important;
+}
+
+.t-tabs .v-tabs-slider {
+  background: var(--t-accent) !important;
+}

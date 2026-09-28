@@ -1,0 +1,27 @@
+/* Gamification design tokens
+   Chủ đề: thành tích học tập — giấy kem ấm, mực navy, điểm nhấn vàng/cam/xanh lá.
+   Import font trong index.html hoặc App.vue:
+   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+*/
+:root {
+  --gam-ink: #1b2a4a;
+  --gam-ink-soft: #48557a;
+  --gam-gold: #e8a93b;
+  --gam-gold-soft: #fbe8c4;
+  --gam-ember: #e8633a;
+  --gam-ember-soft: #fbdccf;
+  --gam-sage: #4a7c59;
+  --gam-sage-soft: #dcebe1;
+  --gam-paper: #faf6ee;
+  --gam-surface: #ffffff;
+  --gam-line: #e4dfd3;
+  --gam-slate: #6b7280;
+  --gam-locked: #c9c4b6;
+
+  --gam-font: "Be Vietnam Pro", system-ui, -apple-system, sans-serif;
+
+  --gam-radius-sm: 8px;
+  --gam-radius-md: 14px;
+  --gam-shadow:
+    0 1px 2px rgba(27, 42, 74, 0.06), 0 8px 20px -12px rgba(27, 42, 74, 0.18);
+}

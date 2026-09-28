@@ -14,16 +14,20 @@ import Assignmentbankview from "@/view/Assignment/Assignmentbankview.vue";
 import Assignmentcreateview from "@/view/Assignment/Assignmentcreateview.vue";
 import Assignmentgenerateview from "@/view/Assignment/Assignmentgenerateview.vue";
 import Classesview from "@/view/Classes/Classesview.vue";
+import Classdashboardview from "@/view/Classes/Classdashboardview.vue";
 import Logsview from "@/view/Logs/Logsview.vue";
 import Profileview from "@/view/Profile/Profileview.vue";
 import BookFlipViewer from "@/view/Book/BookFlipViewer.vue";
 import StudentDashboard from "@/view/Student/StudentDashboard.vue";
 import StudentAssignmentView from "@/view/Student/StudentAssignmentView.vue";
+import StudentAssignmentPlayView from "@/view/Student/StudentAssignmentPlayView.vue";
+import StudentClassDetail from "@/view/Student/StudentClassDetail.vue";
 import StudentHistoryView from "@/view/Student/StudentHistoryView.vue";
 import StudentResultView from "@/view/Student/StudentResultView.vue";
 import StudentResourcesView from "@/view/Student/StudentResourcesView.vue";
 import StudentProfileView from "@/view/Student/StudentProfileView.vue";
 import StudentAiView from "@/view/Student/StudentAiView.vue";
+import GamificationView from "@/view/Student/GamificationView.vue";
 
 const routes = [
   {
@@ -74,6 +78,20 @@ const routes = [
     meta: { requiresAuth: true, role: "student" },
   },
   {
+    path: "/student/assignment-play/:id",
+    name: "student-assignment-play",
+    component: StudentAssignmentPlayView,
+    props: true,
+    meta: { requiresAuth: true, role: "student" },
+  },
+  {
+    path: "/student/class/:id",
+    name: "student-class-detail",
+    component: StudentClassDetail,
+    props: true,
+    meta: { requiresAuth: true, role: "student" },
+  },
+  {
     path: "/student/history",
     name: "student-history",
     component: StudentHistoryView,
@@ -96,6 +114,12 @@ const routes = [
     path: "/student/profile",
     name: "student-profile",
     component: StudentProfileView,
+    meta: { requiresAuth: true, role: "student" },
+  },
+  {
+    path: "/student/gamification",
+    name: "student-gamification",
+    component: GamificationView,
     meta: { requiresAuth: true, role: "student" },
   },
   {
@@ -167,6 +191,13 @@ const routes = [
         name: "teacher-classes",
         component: Classesview,
         meta: { title: "Lớp / Niên khóa" },
+      },
+      {
+        path: "classes/:classId/dashboard",
+        name: "ClassDashboard",
+        component: Classdashboardview,
+        props: true,
+        meta: { title: "Dashboard lớp học" },
       },
       {
         path: "logs",

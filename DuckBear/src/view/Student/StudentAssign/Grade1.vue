@@ -362,8 +362,9 @@ onMounted(async () => {
 
 /* ---------- top bar ---------- */
 .play-screen {
-  max-width: 720px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: none;
+  margin: 0;
 }
 .top-bar {
   display: flex;

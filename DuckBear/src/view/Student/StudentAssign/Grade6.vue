@@ -355,8 +355,9 @@ onBeforeUnmount(() => observer?.disconnect());
   display: grid;
   grid-template-columns: 260px 1fr;
   gap: 24px;
-  max-width: 1080px;
-  margin: 0 auto;
+  width: 100%;
+  max-width: none;
+  margin: 0;
   padding: 24px 16px 60px;
   align-items: start;
 }
