@@ -222,7 +222,4 @@ onMounted(loadSummary);
 .gw__link:hover {
   color: var(--gam-ink);
 }
-
-
-
 </style>
