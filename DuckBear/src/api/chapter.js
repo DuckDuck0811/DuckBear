@@ -4,6 +4,10 @@ export function getChaptersByBookApi(bookId) {
   return api.get(`/chapter-management/by-book/${bookId}`);
 }
 
+export function getChapterByIdApi(id) {
+  return api.get(`/chapter-management/${id}`);
+}
+
 export function createChapterApi(payload) {
   return api.post("/chapter-management/add", payload);
 }

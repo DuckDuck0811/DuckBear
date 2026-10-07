@@ -265,7 +265,11 @@
 
 <script setup>
 import { computed, onMounted, reactive, ref } from "vue";
-import { getLessonsApi, getLessonsByChapterApi } from "@/api/lesson";
+import {
+  getLessonByIdApi,
+  getLessonsApi,
+  getLessonsByChapterApi,
+} from "@/api/lesson";
 import { getChaptersByBookApi } from "@/api/chapter";
 import { generateQuestionsApi, saveGeneratedQuestionsApi } from "@/api/ai";
 
@@ -301,12 +305,33 @@ const difficultyTotal = computed(
     Number(form.hardPercent || 0),
 );
 
-function selectLesson(lessonId) {
-  const lesson = lessons.value.find((item) => item.id === lessonId);
+async function selectLesson(lessonId) {
+  const lesson = lessons.value.find(
+    (item) => String(item.id) === String(lessonId),
+  );
   if (!lesson) return;
   form.lessonName = lesson.title;
   form.chapterName = lesson.chapterTitle || "";
   if (!form.subjectName) form.subjectName = "Toán học";
+
+  const selectedLessonId = lesson.id;
+  if (lesson.content?.trim()) {
+    form.lessonContent = lesson.content;
+    return;
+  }
+
+  form.lessonContent = "";
+  try {
+    const response = await getLessonByIdApi(lesson.id);
+    if (String(form.lessonId) === String(selectedLessonId)) {
+      form.lessonContent = response.data?.content || "";
+    }
+  } catch (error) {
+    if (String(form.lessonId) === String(selectedLessonId)) {
+      errorMessage.value =
+        error.response?.data?.message || "Không tải được nội dung bài học";
+    }
+  }
 }
 
 async function generate() {
@@ -371,7 +396,7 @@ onMounted(async () => {
     lessons.value = allLessons.map((lesson) => ({
       ...lesson,
       displayTitle: lesson.chapterTitle
-        ? `${lesson.chapterTitle} / ${lesson.title}`
+        ? `${lesson.title} / ${lesson.chapterTitle}`
         : lesson.title,
     }));
 
@@ -391,7 +416,7 @@ onMounted(async () => {
         return chapterLessons.map((lesson) => ({
           ...lesson,
           chapterTitle: lesson.chapterTitle || chapter.title,
-          displayTitle: `${lesson.chapterTitle || chapter.title} / ${lesson.title}`,
+          displayTitle: `${lesson.title} / ${lesson.chapterTitle || chapter.title}`,
         }));
       });
     }

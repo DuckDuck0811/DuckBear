@@ -165,11 +165,6 @@ const menuSections = [
         icon: "mdi-help-box-multiple-outline",
         to: { name: "teacher-questions" },
       },
-      {
-        label: "Scan tài liệu (OCR)",
-        icon: "mdi-camera-document",
-        to: { name: "teacher-ocr" },
-      },
     ],
   },
   {
@@ -204,6 +199,16 @@ const menuSections = [
         label: "Nhật ký hoạt động",
         icon: "mdi-history",
         to: { name: "teacher-logs" },
+      },
+    ],
+  },
+  {
+    title: "Gamification",
+    items: [
+      {
+        label: "Quản lý huy hiệu",
+        icon: "mdi-medal-outline",
+        to: { name: "teacher-badges" },
       },
     ],
   },
