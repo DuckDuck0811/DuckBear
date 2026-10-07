@@ -1,6 +1,8 @@
+import apiBaseUrl from './apiBaseUrl'
+
 export const getStats = async () => {
   try {
-    const response = await fetch("http://localhost:8080/api/stats/dashboard");
+    const response = await fetch(`${apiBaseUrl}/stats/dashboard`);
     if (!response.ok) throw new Error("Failed to fetch stats");
     return await response.json();
   } catch (error) {
