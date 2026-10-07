@@ -27,13 +27,3 @@ export function updateBookApi(id, payload) {
 export function deleteBookApi(id) {
   return api.delete(`/book-management/remove/${id}`);
 }
-
-export function previewImportApi(formData) {
-  return api.post("/book-management/import-preview", formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
-}
-
-export function confirmImportApi(bookId, chapters) {
-  return api.post(`/book-management/${bookId}/import-confirm`, chapters);
-}

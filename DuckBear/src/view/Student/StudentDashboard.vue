@@ -135,19 +135,10 @@
           <div class="section-heading">
             <div>
               <h2>Học tập</h2>
-              <p class="section-sub">
-                Đi đến tài liệu, hồ sơ và trợ lý học tập.
-              </p>
+              <p class="section-sub">Đi đến hồ sơ và trợ lý học tập.</p>
             </div>
           </div>
           <div class="tab-row">
-            <button
-              class="tab-card"
-              @click="router.push({ name: 'student-resources' })"
-            >
-              <v-icon size="22">mdi-book-open-variant</v-icon>
-              <span>Tài liệu</span>
-            </button>
             <button
               class="tab-card"
               @click="router.push({ name: 'student-profile' })"

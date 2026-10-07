@@ -24,6 +24,11 @@
       </v-btn>
     </div>
 
+    <div v-if="chapters.length" class="chapter-list-heading">
+      <h2>Danh sách chương</h2>
+      <span>{{ chapters.length }} chương</span>
+    </div>
+
     <!-- Loading -->
     <div v-if="loading" class="text-center py-12">
       <v-progress-circular indeterminate color="primary" />
@@ -57,7 +62,12 @@
         <v-expansion-panel-title class="chapter-panel-title">
           <div class="chapter-title-row">
             <span class="chapter-index">{{ chapter.orderIndex }}</span>
-            <span class="chapter-name">{{ chapter.title }}</span>
+            <div class="chapter-heading-text">
+              <span class="chapter-name">{{ chapter.title }}</span>
+              <span v-if="chapter.description" class="chapter-description">
+                {{ chapter.description }}
+              </span>
+            </div>
           </div>
           <template #actions>
             <v-btn
@@ -89,21 +99,23 @@
               class="lesson-row"
             >
               <v-icon icon="mdi-book-open-outline" size="17" color="#9CA3AF" />
-              <span class="lesson-name">{{ lesson.title }}</span>
+              <button type="button" class="lesson-name" @click="openLesson(lesson)">
+                {{ lesson.title }}
+              </button>
               <v-spacer />
               <v-btn
                 icon="mdi-pencil-outline"
                 variant="text"
                 size="x-small"
                 color="secondary"
-                @click="openEditLesson(chapter, lesson)"
+                @click.stop="openEditLesson(chapter, lesson)"
               />
               <v-btn
                 icon="mdi-delete-outline"
                 variant="text"
                 size="x-small"
                 color="error"
-                @click="confirmDeleteLesson(chapter, lesson)"
+                @click.stop="confirmDeleteLesson(chapter, lesson)"
               />
             </div>
 
@@ -140,7 +152,17 @@
               variant="outlined"
               density="comfortable"
               placeholder="VD: Chương 1: Số tự nhiên"
-              :rules="[(v) => !!v || 'Không được để trống']"
+              :rules="[(v) => !!v?.trim() || 'Không được để trống']"
+              class="mb-3"
+            />
+            <div class="t-field-label">Mô tả ngắn (không bắt buộc)</div>
+            <v-textarea
+              v-model="chapterForm.description"
+              variant="outlined"
+              density="comfortable"
+              rows="2"
+              auto-grow
+              maxlength="5000"
               class="mb-3"
             />
             <div class="t-field-label">Thứ tự</div>
@@ -149,7 +171,7 @@
               type="number"
               variant="outlined"
               density="comfortable"
-              :rules="[(v) => !!v || 'Không được để trống']"
+              :rules="[(v) => Number(v) > 0 || 'Thứ tự phải lớn hơn 0']"
             />
           </v-form>
         </v-card-text>
@@ -184,7 +206,17 @@
               variant="outlined"
               density="comfortable"
               placeholder="VD: Bài 1: Tập hợp"
-              :rules="[(v) => !!v || 'Không được để trống']"
+              :rules="[(v) => !!v?.trim() || 'Không được để trống']"
+              class="mb-3"
+            />
+            <div class="t-field-label">Nội dung bài</div>
+            <v-textarea
+              v-model="lessonForm.content"
+              variant="outlined"
+              density="comfortable"
+              rows="5"
+              auto-grow
+              placeholder="Nhập nội dung bài học..."
               class="mb-3"
             />
             <div class="t-field-label">Thứ tự</div>
@@ -193,7 +225,7 @@
               type="number"
               variant="outlined"
               density="comfortable"
-              :rules="[(v) => !!v || 'Không được để trống']"
+              :rules="[(v) => Number(v) > 0 || 'Thứ tự phải lớn hơn 0']"
             />
           </v-form>
         </v-card-text>
@@ -235,62 +267,13 @@
       </v-card>
     </v-dialog>
 
-    <!-- Import material dialog -->
-    <v-dialog v-model="materialDialog" max-width="460">
-      <v-card class="pa-1" style="border-radius: 14px">
-        <v-card-title class="t-dialog-title px-5 pt-5 pb-1">
-          Nhập file PDF
-          <div class="import-target-label">{{ importTargetLabel }}</div>
-        </v-card-title>
-        <v-card-text class="px-5">
-          <v-form ref="materialFormRef">
-            <div class="t-field-label">Tiêu đề tài liệu</div>
-            <v-text-field
-              v-model="materialForm.title"
-              variant="outlined"
-              density="comfortable"
-              placeholder="VD: Sách giáo khoa (bản scan)"
-              :rules="[(v) => !!v || 'Không được để trống']"
-              class="mb-3"
-            />
-            <div class="t-field-label">File PDF</div>
-            <v-file-input
-              v-model="materialForm.file"
-              variant="outlined"
-              density="comfortable"
-              accept="application/pdf"
-              prepend-icon=""
-              prepend-inner-icon="mdi-paperclip"
-              placeholder="Chọn file PDF (tối đa 50MB)"
-              :rules="[(v) => !!v || 'Vui lòng chọn file']"
-              show-size
-            />
-          </v-form>
-        </v-card-text>
-        <v-card-actions class="px-5 pb-4 pt-2">
-          <v-spacer />
-          <v-btn variant="text" class="text-none" color="secondary" @click="materialDialog = false">Hủy</v-btn>
-          <v-btn
-            color="primary"
-            variant="flat"
-            class="text-none"
-            style="border-radius: 8px; font-weight: 600"
-            :loading="savingMaterial"
-            @click="saveMaterial"
-          >
-            Tải lên
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, computed } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getBookByIdApi } from "@/api/book";
-import { uploadMaterialApi } from "@/api/material";
 import {
   getChaptersByBookApi,
   createChapterApi,
@@ -298,6 +281,7 @@ import {
   deleteChapterApi,
 } from "@/api/chapter";
 import {
+  getLessonByIdApi,
   getLessonsByChapterApi,
   createLessonApi,
   updateLessonApi,
@@ -366,11 +350,12 @@ const chapterDialog = ref(false);
 const editingChapter = ref(null);
 const chapterFormRef = ref(null);
 const savingChapter = ref(false);
-const chapterForm = reactive({ title: "", orderIndex: 1 });
+const chapterForm = reactive({ title: "", description: "", orderIndex: 1 });
 
 function openCreateChapter() {
   editingChapter.value = null;
   chapterForm.title = "";
+  chapterForm.description = "";
   chapterForm.orderIndex = chapters.value.length + 1;
   chapterDialog.value = true;
 }
@@ -378,6 +363,7 @@ function openCreateChapter() {
 function openEditChapter(chapter) {
   editingChapter.value = chapter;
   chapterForm.title = chapter.title;
+  chapterForm.description = chapter.description || "";
   chapterForm.orderIndex = chapter.orderIndex;
   chapterDialog.value = true;
 }
@@ -390,6 +376,7 @@ async function saveChapter() {
   const payload = {
     bookId,
     title: chapterForm.title,
+    description: chapterForm.description,
     orderIndex: chapterForm.orderIndex,
   };
 
@@ -415,22 +402,30 @@ const editingLesson = ref(null);
 const activeChapterForLesson = ref(null);
 const lessonFormRef = ref(null);
 const savingLesson = ref(false);
-const lessonForm = reactive({ title: "", orderIndex: 1 });
+const lessonForm = reactive({ title: "", content: "", orderIndex: 1 });
 
 function openCreateLesson(chapter) {
   activeChapterForLesson.value = chapter;
   editingLesson.value = null;
   lessonForm.title = "";
+  lessonForm.content = "";
   lessonForm.orderIndex = chapter.lessons.length + 1;
   lessonDialog.value = true;
 }
 
-function openEditLesson(chapter, lesson) {
-  activeChapterForLesson.value = chapter;
-  editingLesson.value = lesson;
-  lessonForm.title = lesson.title;
-  lessonForm.orderIndex = lesson.orderIndex;
-  lessonDialog.value = true;
+async function openEditLesson(chapter, lesson) {
+  try {
+    const response = await getLessonByIdApi(lesson.id);
+    activeChapterForLesson.value = chapter;
+    editingLesson.value = lesson;
+    lessonForm.title = response.data.title;
+    lessonForm.content = response.data.content || "";
+    lessonForm.orderIndex = response.data.orderIndex;
+    lessonDialog.value = true;
+  } catch (err) {
+    console.error("Lỗi tải nội dung bài học:", err);
+    alert(err.response?.data?.message || "Không thể tải nội dung bài học");
+  }
 }
 
 async function saveLesson() {
@@ -442,6 +437,7 @@ async function saveLesson() {
   const payload = {
     chapterId: chapter.id,
     title: lessonForm.title,
+    content: lessonForm.content,
     orderIndex: lessonForm.orderIndex,
   };
 
@@ -462,57 +458,8 @@ async function saveLesson() {
   }
 }
 
-/* ---------- Import material (PDF) ---------- */
-const materialDialog = ref(false);
-const materialFormRef = ref(null);
-const savingMaterial = ref(false);
-const materialForm = reactive({ title: "", file: null });
-const importTarget = ref(null);
-
-const importTargetLabel = computed(() => {
-  if (!importTarget.value) return "";
-  const t = importTarget.value;
-  if (t.type === "book") return `Cho toàn bộ sách: ${book.value?.title || ""}`;
-  if (t.type === "chapter") return `Cho chương: ${t.chapter.title}`;
-  if (t.type === "lesson") return `Cho bài học: ${t.lesson.title}`;
-  return "";
-});
-
-function openImportMaterial(target) {
-  importTarget.value = target;
-  materialForm.title = "";
-  materialForm.file = null;
-  materialDialog.value = true;
-}
-
-async function saveMaterial() {
-  const { valid } = await materialFormRef.value.validate();
-  if (!valid) return;
-
-  savingMaterial.value = true;
-  const target = importTarget.value;
-  const formData = new FormData();
-  formData.append("title", materialForm.title);
-
-  const fileToUpload = Array.isArray(materialForm.file)
-    ? materialForm.file[0]
-    : materialForm.file;
-  formData.append("file", fileToUpload);
-
-  if (target.type === "book") formData.append("bookId", bookId);
-  if (target.type === "chapter")
-    formData.append("chapterId", target.chapter.id);
-  if (target.type === "lesson") formData.append("lessonId", target.lesson.id);
-
-  try {
-    await uploadMaterialApi(formData);
-    materialDialog.value = false;
-  } catch (err) {
-    console.error("Lỗi tải file:", err);
-    alert(err.response?.data?.message || "Không thể tải file lên");
-  } finally {
-    savingMaterial.value = false;
-  }
+function openLesson(lesson) {
+  router.push({ name: "teacher-lesson-detail", params: { lessonId: lesson.id } });
 }
 
 /* ---------- Delete (dùng chung) ---------- */
@@ -577,6 +524,34 @@ async function executeDelete() {
   gap: 10px;
 }
 
+.chapter-heading-text {
+  display: grid;
+  gap: 3px;
+}
+
+.chapter-list-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 10px 0 14px;
+}
+
+.chapter-list-heading h2 {
+  margin: 0;
+  color: #1a1d2e;
+  font-size: 18px;
+}
+
+.chapter-list-heading span,
+.chapter-description {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.chapter-description {
+  white-space: normal;
+}
+
 .chapter-index {
   width: 26px;
   height: 26px;
@@ -612,6 +587,7 @@ async function executeDelete() {
   border-bottom: 1px solid #f0f2f8;
   border-radius: 6px;
   transition: background 0.12s;
+  cursor: pointer;
 }
 
 .lesson-row:hover {
@@ -623,8 +599,17 @@ async function executeDelete() {
 }
 
 .lesson-name {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
   font-size: 13.5px;
   color: #374151;
+  text-align: left;
+}
+
+.lesson-name:hover {
+  color: #4f7cff;
 }
 
 .lesson-empty {

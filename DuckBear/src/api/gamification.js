@@ -18,8 +18,24 @@ export function getAllBadges() {
   return api.get(`/gamification/badges`);
 }
 
+export function createBadge(payload) {
+  return api.post(`/gamification/badges`, payload);
+}
+
+export function updateBadge(id, payload) {
+  return api.put(`/gamification/badges/${id}`, payload);
+}
+
+export function deleteBadge(id) {
+  return api.delete(`/gamification/badges/${id}`);
+}
+
 export function getUserBadges(userId) {
   return api.get(`/gamification/badges/${userId}`);
+}
+
+export function getStudentBadgeHistory(userId) {
+  return api.get(`/gamification/students/${userId}/badges`);
 }
 
 export function getStreak(userId) {

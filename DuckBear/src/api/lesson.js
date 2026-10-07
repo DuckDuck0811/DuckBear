@@ -4,6 +4,10 @@ export function getLessonsApi() {
   return api.get("/lesson-management");
 }
 
+export function getLessonByIdApi(id) {
+  return api.get(`/lesson-management/${id}`);
+}
+
 export function getLessonsByChapterApi(chapterId) {
   return api.get(`/lesson-management/by-chapter/${chapterId}`);
 }

@@ -8,8 +8,8 @@ import LoginRoleSelect from "@/view/Login/LoginRoleSelect.vue";
 import TeacherLayout from "@/layout/TeacherLayout.vue";
 import BookView from "@/view/Book/BookView.vue";
 import LessionsView from "@/view/Lession/LessionsView.vue";
+import LessonDetailView from "@/view/Lession/LessonDetailView.vue";
 import Question from "@/view/Question/Question.vue";
-import Ocrimportview from "@/view/Ocrimportview/Ocrimportview.vue";
 import Assignmentbankview from "@/view/Assignment/Assignmentbankview.vue";
 import Assignmentcreateview from "@/view/Assignment/Assignmentcreateview.vue";
 import Assignmentgenerateview from "@/view/Assignment/Assignmentgenerateview.vue";
@@ -17,17 +17,16 @@ import Classesview from "@/view/Classes/Classesview.vue";
 import Classdashboardview from "@/view/Classes/Classdashboardview.vue";
 import Logsview from "@/view/Logs/Logsview.vue";
 import Profileview from "@/view/Profile/Profileview.vue";
-import BookFlipViewer from "@/view/Book/BookFlipViewer.vue";
 import StudentDashboard from "@/view/Student/StudentDashboard.vue";
 import StudentAssignmentView from "@/view/Student/StudentAssignmentView.vue";
 import StudentAssignmentPlayView from "@/view/Student/StudentAssignmentPlayView.vue";
 import StudentClassDetail from "@/view/Student/StudentClassDetail.vue";
 import StudentHistoryView from "@/view/Student/StudentHistoryView.vue";
 import StudentResultView from "@/view/Student/StudentResultView.vue";
-import StudentResourcesView from "@/view/Student/StudentResourcesView.vue";
 import StudentProfileView from "@/view/Student/StudentProfileView.vue";
 import StudentAiView from "@/view/Student/StudentAiView.vue";
 import GamificationView from "@/view/Student/GamificationView.vue";
+import BadgeManagementView from "@/view/Gamification/BadgeManagementView.vue";
 
 const routes = [
   {
@@ -105,12 +104,6 @@ const routes = [
     meta: { requiresAuth: true, role: "student" },
   },
   {
-    path: "/student/resources",
-    name: "student-resources",
-    component: StudentResourcesView,
-    meta: { requiresAuth: true, role: "student" },
-  },
-  {
     path: "/student/profile",
     name: "student-profile",
     component: StudentProfileView,
@@ -129,17 +122,16 @@ const routes = [
     meta: { requiresAuth: true, role: "student" },
   },
   {
-    path: "/student/book-viewer",
-    name: "student-book-viewer",
-    components: { default: BookFlipViewer },
-    props: (route) => ({ bookId: route.query.bookId }),
-    meta: { requiresAuth: true, role: "student" },
-  },
-  {
     path: "/teacher",
     component: TeacherLayout,
     meta: { requiresAuth: true, role: "teacher" },
     children: [
+      {
+        path: "gamification/badges",
+        name: "teacher-badges",
+        component: BadgeManagementView,
+        meta: { title: "Quản lý huy hiệu" },
+      },
       {
         path: "",
         redirect: { name: "teacher-books" },
@@ -157,16 +149,16 @@ const routes = [
         meta: { title: "Chương - Bài học" },
       },
       {
+        path: "lessons/:lessonId",
+        name: "teacher-lesson-detail",
+        component: LessonDetailView,
+        meta: { title: "Nội dung bài học" },
+      },
+      {
         path: "questions",
         name: "teacher-questions",
         component: Question,
         meta: { title: "Ngân hàng câu hỏi" },
-      },
-      {
-        path: "ocr",
-        name: "teacher-ocr",
-        component: Ocrimportview,
-        meta: { title: "Scan tài liệu (OCR)" },
       },
       {
         path: "assignments/create",
@@ -210,13 +202,6 @@ const routes = [
         name: "teacher-profile",
         component: Profileview,
         meta: { title: "Hồ sơ cá nhân" },
-      },
-      {
-        path: "book-viewer",
-        name: "teacher-book-viewer",
-        components: { default: BookFlipViewer },
-        props: (route) => ({ bookId: route.query.bookId }),
-        meta: { title: "Xem sách" },
       },
     ],
   },
