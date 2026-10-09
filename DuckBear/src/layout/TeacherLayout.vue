@@ -235,6 +235,12 @@ const initials = computed(() => {
 <style scoped>
 /* ---- Drawer ---- */
 .teacher-drawer {
+  position: fixed !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  max-height: 100dvh;
   border-right: 1px solid #e8ecf4;
 }
 

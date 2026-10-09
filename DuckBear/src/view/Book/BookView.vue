@@ -423,9 +423,15 @@ const bookThemes = [
     gradient: "linear-gradient(135deg, #6366F1 0%, #4338CA 100%)",
   },
   {
-    id: "history_geo",
-    name: "Sử - Địa",
-    icon: "mdi-compass-outline",
+    id: "history",
+    name: "Lịch sử",
+    icon: "mdi-history",
+    gradient: "linear-gradient(135deg, #B45309 0%, #78350F 100%)",
+  },
+  {
+    id: "geography",
+    name: "Địa lý",
+    icon: "mdi-earth",
     gradient: "linear-gradient(135deg, #EA580C 0%, #C2410C 100%)",
   },
   {
@@ -438,19 +444,25 @@ const bookThemes = [
 
 function getThemeForBook(book) {
   if (book.themeId) {
+    if (book.themeId === "history_geo") {
+      const text = `${book.subject || ""} ${book.name || ""}`.toLowerCase();
+      if (text.includes("địa")) return bookThemes.find((t) => t.id === "geography") || bookThemes[0];
+      return bookThemes.find((t) => t.id === "history") || bookThemes[0];
+    }
     const found = bookThemes.find((t) => t.id === book.themeId);
     if (found) return found;
   }
   const text = `${book.subject || ""} ${book.name || ""}`.toLowerCase();
-  if (text.includes("toán") || text.includes("math")) return bookThemes[0];
-  if (text.includes("văn") || text.includes("ngữ văn") || text.includes("tiếng việt")) return bookThemes[1];
-  if (text.includes("anh") || text.includes("ngoại ngữ") || text.includes("english")) return bookThemes[2];
-  if (text.includes("lý") || text.includes("vật lý") || text.includes("physics")) return bookThemes[3];
-  if (text.includes("hóa") || text.includes("chemistry")) return bookThemes[4];
-  if (text.includes("sinh") || text.includes("biology")) return bookThemes[5];
-  if (text.includes("tin") || text.includes("công nghệ") || text.includes("it")) return bookThemes[6];
-  if (text.includes("sử") || text.includes("địa")) return bookThemes[7];
-  return bookThemes[8];
+  if (text.includes("toán") || text.includes("math")) return bookThemes.find((t) => t.id === "math");
+  if (text.includes("văn") || text.includes("ngữ văn") || text.includes("tiếng việt")) return bookThemes.find((t) => t.id === "literature");
+  if (text.includes("anh") || text.includes("ngoại ngữ") || text.includes("english")) return bookThemes.find((t) => t.id === "english");
+  if (text.includes("lý") || text.includes("vật lý") || text.includes("physics")) return bookThemes.find((t) => t.id === "physics");
+  if (text.includes("hóa") || text.includes("chemistry")) return bookThemes.find((t) => t.id === "chemistry");
+  if (text.includes("sinh") || text.includes("biology")) return bookThemes.find((t) => t.id === "biology");
+  if (text.includes("tin") || text.includes("công nghệ") || text.includes("it")) return bookThemes.find((t) => t.id === "informatics");
+  if (text.includes("sử") || text.includes("history")) return bookThemes.find((t) => t.id === "history");
+  if (text.includes("địa") || text.includes("geography")) return bookThemes.find((t) => t.id === "geography");
+  return bookThemes.find((t) => t.id === "general") || bookThemes[0];
 }
 
 const subjectOptions = computed(() =>
@@ -583,7 +595,10 @@ function onSubjectChange(subjectId) {
   else if (name.includes("hóa")) form.themeId = "chemistry";
   else if (name.includes("sinh")) form.themeId = "biology";
   else if (name.includes("tin")) form.themeId = "informatics";
-  else if (name.includes("sử") || name.includes("địa")) form.themeId = "history_geo";
+  else if (name.includes("sử") && !name.includes("địa")) form.themeId = "history";
+  else if (name.includes("địa") && !name.includes("sử")) form.themeId = "geography";
+  else if (name.includes("sử")) form.themeId = "history";
+  else if (name.includes("địa")) form.themeId = "geography";
   else form.themeId = "general";
 }
 

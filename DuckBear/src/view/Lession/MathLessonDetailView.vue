@@ -39,7 +39,11 @@
         </div>
 
         <!-- Font size toggle -->
-        <v-btn-group density="compact" variant="outlined" class="font-size-group">
+        <v-btn-group
+          density="compact"
+          variant="outlined"
+          class="font-size-group"
+        >
           <v-btn
             size="x-small"
             :color="fontSize === 'small' ? 'primary' : undefined"
@@ -81,11 +85,19 @@
     <!-- Loading -->
     <div v-if="loading" class="text-center py-16">
       <v-progress-circular indeterminate color="primary" size="48" width="4" />
-      <p class="mt-3 text-secondary text-body-2 font-weight-medium">Đang tải nội dung bài học...</p>
+      <p class="mt-3 text-secondary text-body-2 font-weight-medium">
+        Đang tải nội dung bài học...
+      </p>
     </div>
 
     <!-- Error alert -->
-    <v-alert v-else-if="error" type="error" variant="tonal" class="mb-5" rounded="lg">
+    <v-alert
+      v-else-if="error"
+      type="error"
+      variant="tonal"
+      class="mb-5"
+      rounded="lg"
+    >
       {{ error }}
     </v-alert>
 
@@ -96,7 +108,11 @@
         <div class="hero-top-row">
           <div class="lesson-breadcrumbs">
             <span class="subject-pill">
-              <v-icon icon="mdi-book-open-page-variant" size="14" class="mr-1" />
+              <v-icon
+                icon="mdi-book-open-page-variant"
+                size="14"
+                class="mr-1"
+              />
               {{ chapter.bookTitle || "Sách học" }}
             </span>
             <v-icon icon="mdi-chevron-right" size="15" color="#94A3B8" />
@@ -108,7 +124,10 @@
               <v-icon icon="mdi-clock-outline" size="14" class="mr-1" />
               Khoảng {{ estimatedMinutes }} phút học
             </span>
-            <span v-if="parsedSections.length" class="meta-chip meta-chip--highlight">
+            <span
+              v-if="parsedSections.length"
+              class="meta-chip meta-chip--highlight"
+            >
               <v-icon icon="mdi-layers-outline" size="14" class="mr-1" />
               {{ parsedSections.length }} phần trọng tâm
             </span>
@@ -143,7 +162,12 @@
       <!-- Raw text view mode -->
       <article v-if="viewMode === 'raw'" class="raw-content-card">
         <div class="raw-header">
-          <v-icon icon="mdi-text-box-outline" size="18" color="#64748B" class="mr-2" />
+          <v-icon
+            icon="mdi-text-box-outline"
+            size="18"
+            color="#64748B"
+            class="mr-2"
+          />
           <span>Văn bản gốc bài học</span>
         </div>
         <div class="raw-body-content" :class="`font-${fontSize}`">
@@ -167,7 +191,9 @@
             </div>
             <div class="section-heading-wrap">
               <span class="section-sub-label">Phần {{ secIdx + 1 }}</span>
-              <h2 class="section-heading-title">{{ sec.cleanTitle || sec.title }}</h2>
+              <h2 class="section-heading-title">
+                {{ sec.cleanTitle || sec.title }}
+              </h2>
             </div>
           </div>
 
@@ -176,7 +202,12 @@
             <!-- 1. CASE: Stepper Workflow (e.g. "Các bước giải") -->
             <div v-if="sec.type === 'stepper'" class="stepper-workflow">
               <div class="stepper-intro-banner">
-                <v-icon icon="mdi-transit-connection-variant" size="20" color="#3B82F6" class="mr-2" />
+                <v-icon
+                  icon="mdi-transit-connection-variant"
+                  size="20"
+                  color="#3B82F6"
+                  class="mr-2"
+                />
                 <span>Quy trình giải bài toán từng bước</span>
               </div>
 
@@ -197,7 +228,12 @@
                         :key="iIdx"
                         class="step-sub-bullet"
                       >
-                        <v-icon icon="mdi-chevron-right-circle" size="16" color="#3B82F6" class="mr-2 flex-shrink-0 mt-1" />
+                        <v-icon
+                          icon="mdi-chevron-right-circle"
+                          size="16"
+                          color="#3B82F6"
+                          class="mr-2 flex-shrink-0 mt-1"
+                        />
                         <span>{{ item }}</span>
                       </div>
                     </div>
@@ -207,9 +243,17 @@
             </div>
 
             <!-- 2. CASE: Topic Cards Grid (e.g. "Một số dạng thường gặp") -->
-            <div v-else-if="sec.type === 'topic-grid'" class="topics-grid-container">
+            <div
+              v-else-if="sec.type === 'topic-grid'"
+              class="topics-grid-container"
+            >
               <div class="topics-intro-banner">
-                <v-icon icon="mdi-shape-plus" size="20" color="#7C3AED" class="mr-2" />
+                <v-icon
+                  icon="mdi-shape-plus"
+                  size="20"
+                  color="#7C3AED"
+                  class="mr-2"
+                />
                 <span>Tổng hợp công thức & dạng toán thực tế thường gặp</span>
               </div>
 
@@ -222,7 +266,11 @@
                 >
                   <div class="topic-card-top">
                     <div class="topic-icon-wrap">
-                      <v-icon :icon="topic.icon" size="22" :color="topic.color" />
+                      <v-icon
+                        :icon="topic.icon"
+                        size="22"
+                        :color="topic.color"
+                      />
                     </div>
                     <h4 class="topic-title">{{ topic.name }}</h4>
                   </div>
@@ -245,7 +293,10 @@
                 :class="`block--${block.type}`"
               >
                 <!-- A. Procedure Flow Card (Cách làm, Quy tắc, Phương pháp) -->
-                <div v-if="block.type === 'procedure'" class="procedure-flow-card">
+                <div
+                  v-if="block.type === 'procedure'"
+                  class="procedure-flow-card"
+                >
                   <div class="procedure-header">
                     <div class="proc-title-wrap">
                       <div class="proc-icon-box">
@@ -253,7 +304,12 @@
                       </div>
                       <h3 class="proc-title">{{ block.title }}</h3>
                     </div>
-                    <v-chip size="small" color="primary" variant="tonal" class="font-weight-bold">
+                    <v-chip
+                      size="small"
+                      color="primary"
+                      variant="tonal"
+                      class="font-weight-bold"
+                    >
                       {{ block.steps.length }} bước thực hiện
                     </v-chip>
                   </div>
@@ -276,35 +332,56 @@
                 </div>
 
                 <!-- B. Definition / Core Formula Block -->
-                <div v-else-if="block.type === 'definition'" class="definition-box">
+                <div
+                  v-else-if="block.type === 'definition'"
+                  class="definition-box"
+                >
                   <div class="def-header">
                     <div class="def-icon-wrap">
                       <v-icon icon="mdi-function" size="18" color="#3B82F6" />
                     </div>
-                    <span class="def-title">{{ block.title || 'Dạng tổng quát' }}</span>
+                    <span class="def-title">{{
+                      block.title || "Khái niệm & Định nghĩa"
+                    }}</span>
                   </div>
                   <div v-if="block.formula" class="def-formula-display">
                     <span class="math-expr">{{ block.formula }}</span>
                   </div>
                   <p class="def-desc">{{ block.text }}</p>
                   <div v-if="block.badges?.length" class="def-badges">
-                    <span v-for="(badge, bi) in block.badges" :key="bi" class="def-chip">
+                    <span
+                      v-for="(badge, bi) in block.badges"
+                      :key="bi"
+                      class="def-chip"
+                    >
                       {{ badge }}
                     </span>
                   </div>
                 </div>
 
                 <!-- C. System of Equations Block -->
-                <div v-else-if="block.type === 'system-equation'" class="system-box">
+                <div
+                  v-else-if="block.type === 'system-equation'"
+                  class="system-box"
+                >
                   <div class="system-header">
-                    <v-icon icon="mdi-code-brackets" size="18" color="#8B5CF6" class="mr-2" />
-                    <span>Dạng tổng quát hệ phương trình</span>
+                    <v-icon
+                      icon="mdi-code-brackets"
+                      size="18"
+                      color="#8B5CF6"
+                      class="mr-2"
+                    />
+                    <span>{{ block.title || "Hệ phương trình" }}</span>
                   </div>
                   <div class="system-brace-display">
                     <div class="curly-brace">{</div>
                     <div class="system-lines">
-                      <div class="system-line">{{ block.eq1 || 'ax + by = c' }}</div>
-                      <div class="system-line">{{ block.eq2 || "a'x + b'y = c'" }}</div>
+                      <div class="system-line">
+                        {{ block.eq1 || "ax + by = c" }}
+                      </div>
+                      <div class="system-line">
+                        {{ block.eq2 || "a'x + b'y = c'" }}
+                      </div>
                     </div>
                   </div>
                   <p v-if="block.text" class="system-desc">{{ block.text }}</p>
@@ -313,26 +390,52 @@
                 <!-- D. Rich Example Card (In ĐẦY ĐỦ các bước, xuống dòng từng bước, trình bày đẹp) -->
                 <div v-else-if="block.type === 'example'" class="example-box">
                   <div class="example-badge-row">
-                    <span class="example-tag" :style="{ backgroundColor: block.themeColor || '#10B981' }">
-                      <v-icon :icon="block.themeIcon || 'mdi-play-circle-outline'" size="14" class="mr-1" />
-                      {{ block.badgeTitle || 'Ví dụ minh họa' }}
+                    <span
+                      class="example-tag"
+                      :style="{
+                        backgroundColor: block.themeColor || '#10B981',
+                      }"
+                    >
+                      <v-icon
+                        :icon="block.themeIcon || 'mdi-play-circle-outline'"
+                        size="14"
+                        class="mr-1"
+                      />
+                      {{ block.badgeTitle || "Ví dụ minh họa" }}
                     </span>
-                    <span v-if="block.subtitle" class="example-sub">{{ block.subtitle }}</span>
+                    <span v-if="block.subtitle" class="example-sub">{{
+                      block.subtitle
+                    }}</span>
                   </div>
 
                   <!-- Problem Statement / Đề bài -->
                   <div class="example-problem-panel">
                     <div class="problem-label">
-                      <v-icon icon="mdi-help-circle-outline" size="16" color="#2563EB" class="mr-1" />
+                      <v-icon
+                        icon="mdi-help-circle-outline"
+                        size="16"
+                        color="#2563EB"
+                        class="mr-1"
+                      />
                       <strong>Đề bài:</strong>
                     </div>
-                    <p class="example-main-text">{{ block.problemText || block.text }}</p>
+                    <p class="example-main-text">
+                      {{ block.problemText || block.text }}
+                    </p>
                   </div>
 
                   <!-- Detailed Step-by-Step Solution / Lời giải chi tiết từng bước -->
-                  <div v-if="block.solutionPhases?.length" class="example-solution-phases">
+                  <div
+                    v-if="block.solutionPhases?.length"
+                    class="example-solution-phases"
+                  >
                     <div class="solution-phases-heading">
-                      <v-icon icon="mdi-format-list-checks" size="17" color="#4F46E5" class="mr-1" />
+                      <v-icon
+                        icon="mdi-format-list-checks"
+                        size="17"
+                        color="#4F46E5"
+                        class="mr-1"
+                      />
                       <span>Các bước giải chi tiết:</span>
                     </div>
 
@@ -349,29 +452,52 @@
 
                       <div class="phase-body">
                         <!-- If it has sub-steps / lines (xuống dòng từng dòng tính toán) -->
-                        <div v-if="phase.steps?.length" class="phase-steps-list">
+                        <div
+                          v-if="phase.steps?.length"
+                          class="phase-steps-list"
+                        >
                           <div
                             v-for="(subStep, ssIdx) in phase.steps"
                             :key="ssIdx"
                             class="phase-sub-step-row"
-                            :class="{ 'is-math-line': subStep.isMath, 'is-prompt-line': subStep.isPrompt }"
+                            :class="{
+                              'is-math-line': subStep.isMath,
+                              'is-prompt-line': subStep.isPrompt,
+                            }"
                           >
                             <v-icon
-                              :icon="subStep.isMath ? 'mdi-subdirectory-arrow-right' : 'mdi-circle-small'"
+                              :icon="
+                                subStep.isMath
+                                  ? 'mdi-subdirectory-arrow-right'
+                                  : 'mdi-circle-small'
+                              "
                               size="16"
                               :color="subStep.isMath ? '#2563EB' : '#64748B'"
                               class="mr-2 flex-shrink-0 mt-1"
                             />
                             <div class="step-text-wrapper">
-                              <span v-if="subStep.prefix" class="step-prefix font-weight-bold mr-1">{{ subStep.prefix }}:</span>
-                              <span class="step-content">{{ subStep.text }}</span>
+                              <span
+                                v-if="subStep.prefix"
+                                class="step-prefix font-weight-bold mr-1"
+                                >{{ subStep.prefix }}:</span
+                              >
+                              <span class="step-content">{{
+                                subStep.text
+                              }}</span>
                             </div>
                           </div>
                         </div>
 
                         <!-- If it has system equations (hiển thị hệ rõ ràng) -->
-                        <div v-else-if="phase.formulaLines?.length" class="phase-equation-box">
-                          <div v-for="(line, lIdx) in phase.formulaLines" :key="lIdx" class="eq-math-line">
+                        <div
+                          v-else-if="phase.formulaLines?.length"
+                          class="phase-equation-box"
+                        >
+                          <div
+                            v-for="(line, lIdx) in phase.formulaLines"
+                            :key="lIdx"
+                            class="eq-math-line"
+                          >
                             <span class="eq-bullet">•</span>
                             <span class="eq-code">{{ line }}</span>
                           </div>
@@ -384,16 +510,24 @@
                   </div>
 
                   <!-- Step verification checks if present -->
-                  <div v-if="block.stepChecks?.length" class="example-steps-grid">
+                  <div
+                    v-if="block.stepChecks?.length"
+                    class="example-steps-grid"
+                  >
                     <div
                       v-for="(st, sIdx) in block.stepChecks"
                       :key="sIdx"
                       class="step-check-card"
-                      :class="{ 'step-check--valid': st.valid, 'step-check--invalid': !st.valid }"
+                      :class="{
+                        'step-check--valid': st.valid,
+                        'step-check--invalid': !st.valid,
+                      }"
                     >
                       <div class="step-check-icon">
                         <v-icon
-                          :icon="st.valid ? 'mdi-check-circle' : 'mdi-close-circle'"
+                          :icon="
+                            st.valid ? 'mdi-check-circle' : 'mdi-close-circle'
+                          "
                           size="18"
                           :color="st.valid ? '#10B981' : '#EF4444'"
                         />
@@ -407,17 +541,25 @@
 
                   <!-- Highlighted Conclusion -->
                   <div v-if="block.conclusion" class="example-conclusion">
-                    <v-icon icon="mdi-check-decagram" size="20" color="#10B981" class="mr-2 flex-shrink-0" />
-                    <div>
-                      <strong>Kết luận:</strong> {{ block.conclusion }}
-                    </div>
+                    <v-icon
+                      icon="mdi-check-decagram"
+                      size="20"
+                      color="#10B981"
+                      class="mr-2 flex-shrink-0"
+                    />
+                    <div><strong>Kết luận:</strong> {{ block.conclusion }}</div>
                   </div>
                 </div>
 
                 <!-- E. Geometric Rule / Cases Block -->
                 <div v-else-if="block.type === 'cases'" class="cases-container">
                   <div class="cases-title">
-                    <v-icon icon="mdi-axis-arrow" size="18" color="#0EA5E9" class="mr-2" />
+                    <v-icon
+                      icon="mdi-axis-arrow"
+                      size="18"
+                      color="#0EA5E9"
+                      class="mr-2"
+                    />
                     Các trường hợp vị trí đường thẳng trên mặt phẳng tọa độ Oxy
                   </div>
                   <div class="cases-grid">
@@ -427,8 +569,12 @@
                       class="case-card"
                     >
                       <div class="case-header">
-                        <span class="case-condition">{{ caseItem.condition }}</span>
-                        <span class="case-badge">{{ caseItem.badge }}</span>
+                        <span class="case-condition">{{
+                          caseItem.condition
+                        }}</span>
+                        <span v-if="caseItem.badge" class="case-badge">{{
+                          caseItem.badge
+                        }}</span>
                       </div>
                       <p class="case-desc">{{ caseItem.desc }}</p>
                     </div>
@@ -436,18 +582,32 @@
                 </div>
 
                 <!-- F. Visual Graph Widget (Oxy Plane - ONLY when lesson teaches graphing) -->
-                <div v-else-if="block.type === 'visual-graph'" class="oxy-visual-widget">
+                <div
+                  v-else-if="block.type === 'visual-graph'"
+                  class="oxy-visual-widget"
+                >
                   <div class="oxy-widget-header">
                     <div class="d-flex align-center">
                       <div class="oxy-icon-badge">
-                        <v-icon icon="mdi-chart-line" size="18" color="#2563EB" />
+                        <v-icon
+                          icon="mdi-chart-line"
+                          size="18"
+                          color="#2563EB"
+                        />
                       </div>
                       <div>
-                        <div class="oxy-title">Minh họa đồ thị trên mặt phẳng Oxy</div>
+                        <div class="oxy-title">
+                          Minh họa đồ thị trên mặt phẳng Oxy
+                        </div>
                         <div class="oxy-subtitle">Đường thẳng x + 2y = 4</div>
                       </div>
                     </div>
-                    <v-chip size="small" color="primary" variant="tonal" class="font-weight-bold">
+                    <v-chip
+                      size="small"
+                      color="primary"
+                      variant="tonal"
+                      class="font-weight-bold"
+                    >
                       Trực quan hình học
                     </v-chip>
                   </div>
@@ -456,52 +616,211 @@
                     <div class="svg-container">
                       <svg viewBox="0 0 360 260" class="oxy-svg">
                         <defs>
-                          <marker id="arrow-x" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                          <marker
+                            id="arrow-x"
+                            viewBox="0 0 10 10"
+                            refX="6"
+                            refY="5"
+                            markerWidth="6"
+                            markerHeight="6"
+                            orient="auto"
+                          >
                             <path d="M 0 1 L 8 5 L 0 9 z" fill="#64748B" />
                           </marker>
-                          <marker id="arrow-y" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                          <marker
+                            id="arrow-y"
+                            viewBox="0 0 10 10"
+                            refX="6"
+                            refY="5"
+                            markerWidth="6"
+                            markerHeight="6"
+                            orient="auto"
+                          >
                             <path d="M 0 1 L 8 5 L 0 9 z" fill="#64748B" />
                           </marker>
                         </defs>
 
                         <g class="grid-lines" stroke="#F1F5F9" stroke-width="1">
-                          <line v-for="x in [40, 80, 120, 160, 200, 240, 280, 320]" :key="`gx-${x}`" :x1="x" y1="20" :x2="x" y2="240" />
-                          <line v-for="y in [40, 80, 120, 160, 200, 240]" :key="`gy-${y}`" x1="20" :y1="y" x2="340" :y2="y" />
+                          <line
+                            v-for="x in [40, 80, 120, 160, 200, 240, 280, 320]"
+                            :key="`gx-${x}`"
+                            :x1="x"
+                            y1="20"
+                            :x2="x"
+                            y2="240"
+                          />
+                          <line
+                            v-for="y in [40, 80, 120, 160, 200, 240]"
+                            :key="`gy-${y}`"
+                            x1="20"
+                            :y1="y"
+                            x2="340"
+                            :y2="y"
+                          />
                         </g>
 
                         <!-- Axes -->
-                        <line x1="40" y1="200" x2="330" y2="200" stroke="#64748B" stroke-width="2" marker-end="url(#arrow-x)" />
-                        <line x1="80" y1="230" x2="80" y2="30" stroke="#64748B" stroke-width="2" marker-end="url(#arrow-y)" />
+                        <line
+                          x1="40"
+                          y1="200"
+                          x2="330"
+                          y2="200"
+                          stroke="#64748B"
+                          stroke-width="2"
+                          marker-end="url(#arrow-x)"
+                        />
+                        <line
+                          x1="80"
+                          y1="230"
+                          x2="80"
+                          y2="30"
+                          stroke="#64748B"
+                          stroke-width="2"
+                          marker-end="url(#arrow-y)"
+                        />
 
-                        <text x="68" y="214" font-size="12" font-weight="700" fill="#64748B">O</text>
-                        <text x="325" y="218" font-size="13" font-weight="800" fill="#2563EB">x</text>
-                        <text x="62" y="32" font-size="13" font-weight="800" fill="#2563EB">y</text>
+                        <text
+                          x="68"
+                          y="214"
+                          font-size="12"
+                          font-weight="700"
+                          fill="#64748B"
+                        >
+                          O
+                        </text>
+                        <text
+                          x="325"
+                          y="218"
+                          font-size="13"
+                          font-weight="800"
+                          fill="#2563EB"
+                        >
+                          x
+                        </text>
+                        <text
+                          x="62"
+                          y="32"
+                          font-size="13"
+                          font-weight="800"
+                          fill="#2563EB"
+                        >
+                          y
+                        </text>
 
-                        <text x="160" y="215" font-size="11" fill="#94A3B8" text-anchor="middle">2</text>
-                        <text x="240" y="215" font-size="11" fill="#94A3B8" text-anchor="middle">4</text>
+                        <text
+                          x="160"
+                          y="215"
+                          font-size="11"
+                          fill="#94A3B8"
+                          text-anchor="middle"
+                        >
+                          2
+                        </text>
+                        <text
+                          x="240"
+                          y="215"
+                          font-size="11"
+                          fill="#94A3B8"
+                          text-anchor="middle"
+                        >
+                          4
+                        </text>
                         <circle cx="240" cy="200" r="3" fill="#64748B" />
 
-                        <text x="68" y="124" font-size="11" fill="#94A3B8" text-anchor="end">2</text>
+                        <text
+                          x="68"
+                          y="124"
+                          font-size="11"
+                          fill="#94A3B8"
+                          text-anchor="end"
+                        >
+                          2
+                        </text>
                         <circle cx="80" cy="120" r="3" fill="#64748B" />
 
-                        <line x1="30" y1="107" x2="280" y2="210" stroke="#2563EB" stroke-width="3" stroke-linecap="round" />
+                        <line
+                          x1="30"
+                          y1="107"
+                          x2="280"
+                          y2="210"
+                          stroke="#2563EB"
+                          stroke-width="3"
+                          stroke-linecap="round"
+                        />
 
                         <!-- Point A(0, 2) -->
                         <g class="svg-point">
-                          <circle cx="80" cy="120" r="7" fill="#3B82F6" class="point-pulse" />
-                          <circle cx="80" cy="120" r="4.5" fill="#FFFFFF" stroke="#2563EB" stroke-width="2" />
-                          <text x="92" y="116" font-size="12" font-weight="700" fill="#1D4ED8">A(0; 2)</text>
+                          <circle
+                            cx="80"
+                            cy="120"
+                            r="7"
+                            fill="#3B82F6"
+                            class="point-pulse"
+                          />
+                          <circle
+                            cx="80"
+                            cy="120"
+                            r="4.5"
+                            fill="#FFFFFF"
+                            stroke="#2563EB"
+                            stroke-width="2"
+                          />
+                          <text
+                            x="92"
+                            y="116"
+                            font-size="12"
+                            font-weight="700"
+                            fill="#1D4ED8"
+                          >
+                            A(0; 2)
+                          </text>
                         </g>
 
                         <!-- Point B(4, 0) -->
                         <g class="svg-point">
-                          <circle cx="240" cy="200" r="7" fill="#10B981" class="point-pulse" />
-                          <circle cx="240" cy="200" r="4.5" fill="#FFFFFF" stroke="#059669" stroke-width="2" />
-                          <text x="242" y="188" font-size="12" font-weight="700" fill="#047857">B(4; 0)</text>
+                          <circle
+                            cx="240"
+                            cy="200"
+                            r="7"
+                            fill="#10B981"
+                            class="point-pulse"
+                          />
+                          <circle
+                            cx="240"
+                            cy="200"
+                            r="4.5"
+                            fill="#FFFFFF"
+                            stroke="#059669"
+                            stroke-width="2"
+                          />
+                          <text
+                            x="242"
+                            y="188"
+                            font-size="12"
+                            font-weight="700"
+                            fill="#047857"
+                          >
+                            B(4; 0)
+                          </text>
                         </g>
 
-                        <rect x="150" y="135" width="105" height="24" rx="12" fill="#EEF2FF" stroke="#C7D2FE" />
-                        <text x="202" y="151" font-size="11" font-weight="700" fill="#3730A3" text-anchor="middle">
+                        <rect
+                          x="150"
+                          y="135"
+                          width="105"
+                          height="24"
+                          rx="12"
+                          fill="#EEF2FF"
+                          stroke="#C7D2FE"
+                        />
+                        <text
+                          x="202"
+                          y="151"
+                          font-size="11"
+                          font-weight="700"
+                          fill="#3730A3"
+                          text-anchor="middle"
+                        >
                           d: x + 2y = 4
                         </text>
                       </svg>
@@ -511,8 +830,11 @@
                       <div class="point-explanation-card">
                         <div class="pt-badge pt-blue">Điểm A</div>
                         <div>
-                          <strong>Cho x = 0:</strong> y = 4/2 = <strong>2</strong>
-                          <div class="text-caption text-secondary">Tọa độ: A(0; 2) trên trục Oy</div>
+                          <strong>Cho x = 0:</strong> y = 4/2 =
+                          <strong>2</strong>
+                          <div class="text-caption text-secondary">
+                            Tọa độ: A(0; 2) trên trục Oy
+                          </div>
                         </div>
                       </div>
 
@@ -520,13 +842,23 @@
                         <div class="pt-badge pt-green">Điểm B</div>
                         <div>
                           <strong>Cho y = 0:</strong> x = <strong>4</strong>
-                          <div class="text-caption text-secondary">Tọa độ: B(4; 0) trên trục Ox</div>
+                          <div class="text-caption text-secondary">
+                            Tọa độ: B(4; 0) trên trục Ox
+                          </div>
                         </div>
                       </div>
 
                       <div class="draw-tip-card mt-3">
-                        <v-icon icon="mdi-pencil-ruler" size="16" color="#4F46E5" class="mr-1" />
-                        <span><strong>Cách vẽ nhanh:</strong> Xác định 2 giao điểm A và B với 2 trục tọa độ, dùng thước nối A và B.</span>
+                        <v-icon
+                          icon="mdi-pencil-ruler"
+                          size="16"
+                          color="#4F46E5"
+                          class="mr-1"
+                        />
+                        <span
+                          ><strong>Cách vẽ nhanh:</strong> Xác định 2 giao điểm
+                          A và B với 2 trục tọa độ, dùng thước nối A và B.</span
+                        >
                       </div>
                     </div>
                   </div>
@@ -538,15 +870,29 @@
                     <v-icon icon="mdi-lightbulb-on" size="18" color="#F59E0B" />
                   </div>
                   <div class="concept-text-content">
-                    <strong v-if="block.label" class="concept-label">{{ block.label }}: </strong>
+                    <strong v-if="block.label" class="concept-label"
+                      >{{ block.label }}:
+                    </strong>
                     <span>{{ block.text }}</span>
                   </div>
                 </div>
 
                 <!-- H. Equations or Calculation Lines -->
-                <div v-else-if="block.type === 'math-lines'" class="math-lines-box">
-                  <div v-for="(line, mIdx) in block.lines" :key="mIdx" class="math-line-row">
-                    <v-icon icon="mdi-equal" size="14" color="#64748B" class="mr-2" />
+                <div
+                  v-else-if="block.type === 'math-lines'"
+                  class="math-lines-box"
+                >
+                  <div
+                    v-for="(line, mIdx) in block.lines"
+                    :key="mIdx"
+                    class="math-line-row"
+                  >
+                    <v-icon
+                      icon="mdi-equal"
+                      size="14"
+                      color="#64748B"
+                      class="mr-2"
+                    />
                     <code>{{ line }}</code>
                   </div>
                 </div>
@@ -561,7 +907,12 @@
         <!-- Dynamic Lesson Recap (CHỈ HIỂN THỊ NẾU BÀI HỌC CÓ LƯU Ý/GHI NHỚ ĐƯỢC TRÍCH XUẤT) -->
         <div v-if="extractedTips.length" class="recap-section">
           <div class="recap-header">
-            <v-icon icon="mdi-bookmark-check-outline" size="22" color="#4F46E5" class="mr-2" />
+            <v-icon
+              icon="mdi-bookmark-check-outline"
+              size="22"
+              color="#4F46E5"
+              class="mr-2"
+            />
             <h3 class="recap-title">Lưu ý & Ghi nhớ của bài này</h3>
           </div>
           <div class="recap-cards-grid">
@@ -607,11 +958,16 @@
               :class="{
                 'opt--selected': selectedOption === (opt.id || optIdx),
                 'opt--correct': quizSubmitted && opt.isCorrect,
-                'opt--wrong': quizSubmitted && selectedOption === (opt.id || optIdx) && !opt.isCorrect
+                'opt--wrong':
+                  quizSubmitted &&
+                  selectedOption === (opt.id || optIdx) &&
+                  !opt.isCorrect,
               }"
               @click="handleSelectQuizOption(opt, optIdx)"
             >
-              <span class="opt-key">{{ String.fromCharCode(65 + optIdx) }}</span>
+              <span class="opt-key">{{
+                String.fromCharCode(65 + optIdx)
+              }}</span>
               <span class="opt-text">{{ opt.content }}</span>
               <v-icon
                 v-if="quizSubmitted && opt.isCorrect"
@@ -621,7 +977,11 @@
                 class="ml-auto"
               />
               <v-icon
-                v-else-if="quizSubmitted && selectedOption === (opt.id || optIdx) && !opt.isCorrect"
+                v-else-if="
+                  quizSubmitted &&
+                  selectedOption === (opt.id || optIdx) &&
+                  !opt.isCorrect
+                "
                 icon="mdi-close-circle"
                 size="18"
                 color="#EF4444"
@@ -631,10 +991,22 @@
           </div>
 
           <!-- Explanation -->
-          <div v-if="quizSubmitted" class="quiz-feedback" :class="quizCorrect ? 'feedback--success' : 'feedback--retry'">
+          <div
+            v-if="quizSubmitted"
+            class="quiz-feedback"
+            :class="quizCorrect ? 'feedback--success' : 'feedback--retry'"
+          >
             <div class="d-flex align-center font-weight-bold mb-1">
-              <v-icon :icon="quizCorrect ? 'mdi-check-decagram' : 'mdi-alert-circle'" size="18" class="mr-1" />
-              {{ quizCorrect ? 'Chính xác! Làm rất tốt!' : 'Chưa chính xác! Xem lại giải thích:' }}
+              <v-icon
+                :icon="quizCorrect ? 'mdi-check-decagram' : 'mdi-alert-circle'"
+                size="18"
+                class="mr-1"
+              />
+              {{
+                quizCorrect
+                  ? "Chính xác! Làm rất tốt!"
+                  : "Chưa chính xác! Xem lại giải thích:"
+              }}
             </div>
             <p v-if="currentQuiz.explanation" class="text-caption mb-0">
               {{ currentQuiz.explanation }}
@@ -752,7 +1124,11 @@ function nextQuizQuestion() {
 }
 
 const currentIndex = computed(() =>
-  sequence.value.findIndex((item) => item.id === Number(route.params.lessonId)),
+  sequence.value.findIndex(
+    (item) =>
+      Number(item.id) === Number(route.params.lessonId) &&
+      Number(item.chapterId) === Number(lesson.value?.chapterId),
+  ),
 );
 
 const estimatedMinutes = computed(() => {
@@ -764,45 +1140,64 @@ const estimatedMinutes = computed(() => {
  * Splits complex Vietnamese mathematical calculation sentences into clean,
  * line-by-line discrete algebraic steps so that each number calculation is on its own row.
  */
-function parseMathCalculationSteps(rawText) {
+function splitIntoSteps(rawText) {
   if (!rawText) return [];
 
-  const colonIdx = rawText.indexOf(":");
-  let promptPrefix = "";
-  let body = rawText;
-
-  if (colonIdx > 0 && colonIdx < 45) {
-    promptPrefix = rawText.substring(0, colonIdx).trim();
-    body = rawText.substring(colonIdx + 1).trim();
+  const stepPrefixMatch = rawText.match(/^(bước\s*\d+[:\.]?)\s*(.*)$/i);
+  if (stepPrefixMatch) {
+    return [
+      {
+        prefix: stepPrefixMatch[1],
+        text: stepPrefixMatch[2],
+        isMath:
+          /[0-9a-z]\s*[\=\+\-\*\/\<\>\≤\≥≠]\s*[0-9a-z]/i.test(
+            stepPrefixMatch[2],
+          ) || stepPrefixMatch[2].includes("="),
+      },
+    ];
   }
 
-  const steps = [];
+  const normalized = rawText
+    .replace(/;\s+/g, " __SPLIT__ ")
+    .replace(/\.\s+(?=[A-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝĐ0-9a-z])/g, " __SPLIT__ ")
+    .replace(
+      /,\s*(nên|suy ra|tức|do đó|thay vào|thế vào|được|chia cả|nhân cả)\s+/gi,
+      " __SPLIT__ $1 ",
+    );
 
-  if (promptPrefix) {
-    steps.push({
-      isPrompt: true,
-      prefix: "Thực hiện",
-      text: promptPrefix,
-    });
-  }
-
-  const clauses = body
-    .replace(/\.\s+/g, " | ")
-    .replace(/;\s+/g, " | ")
-    .replace(/,\s*(nên|suy ra|thay vào|thế vào|được)\s+/gi, " | $1 ")
-    .split("|")
+  const parts = normalized
+    .split("__SPLIT__")
     .map((s) => s.trim())
     .filter(Boolean);
+  const result = [];
 
-  for (const clause of clauses) {
-    const isMath = /[0-9a-z]\s*[\=\+\-\*\/]\s*[0-9a-z]/i.test(clause) || clause.includes("=");
-    steps.push({
-      isMath,
-      text: clause,
+  for (const part of parts) {
+    const colonIdx = part.indexOf(":");
+    if (colonIdx > 0 && colonIdx < 40 && !/^\d+:\d+$/.test(part)) {
+      const prefix = part.substring(0, colonIdx).trim();
+      const content = part.substring(colonIdx + 1).trim();
+      if (content) {
+        result.push({
+          prefix,
+          text: content,
+          isMath:
+            /[0-9a-z]\s*[\=\+\-\*\/\<\>\≤\≥≠]\s*[0-9a-z]/i.test(content) ||
+            content.includes("="),
+        });
+        continue;
+      }
+    }
+
+    result.push({
+      prefix: "",
+      text: part,
+      isMath:
+        /[0-9a-z]\s*[\=\+\-\*\/\<\>\≤\≥≠]\s*[0-9a-z]/i.test(part) ||
+        part.includes("="),
     });
   }
 
-  return steps;
+  return result;
 }
 
 /**
@@ -824,29 +1219,26 @@ const parsedSections = computed(() => {
 
   const isSectionHeading = (line) => {
     if (!line || line.length > 80) return false;
-
-    // Numbered headings like "1. Phương pháp thế", "2. Phương pháp cộng...", "I. ...", "Phần 1..."
     if (/^([0-9]+|[I|V|X]+)[\.\)]\s*(.+)$/i.test(line)) return true;
 
-    const knownTitles = [
+    const majorTitles = [
       "các bước giải",
       "quy trình giải",
-      "quy trình thực hiện",
-      "ví dụ minh họa",
-      "ví dụ áp dụng",
-      "bài tập mẫu",
       "một số dạng thường gặp",
       "các dạng thường gặp",
       "các dạng toán",
       "dạng toán thường gặp",
-      "khái niệm và định nghĩa",
-      "định lý và tính chất",
       "tóm tắt lý thuyết",
-      "ghi nhớ cốt lõi",
+      "bài tập tự luyện",
+      "bài tập áp dụng",
+      "ví dụ minh họa",
+      "luyện tập",
     ];
-
-    const clean = line.toLowerCase().replace(/[:\.\-]/g, "").trim();
-    return knownTitles.some((kt) => clean === kt || clean.startsWith(kt));
+    const clean = line
+      .toLowerCase()
+      .replace(/[:\.\-]/g, "")
+      .trim();
+    return majorTitles.some((t) => clean === t || clean.startsWith(t));
   };
 
   for (let i = 0; i < rawLines.length; i++) {
@@ -863,8 +1255,8 @@ const parsedSections = computed(() => {
     } else {
       if (!currentGroup) {
         currentGroup = {
-          title: "Khái niệm mở đầu",
-          cleanTitle: "Nội dung bài học",
+          title: "1. Khái niệm mở đầu",
+          cleanTitle: "Khái niệm mở đầu",
           lines: [],
         };
         sectionGroups.push(currentGroup);
@@ -877,17 +1269,19 @@ const parsedSections = computed(() => {
 
   for (const group of sectionGroups) {
     const groupTitleLower = group.title.toLowerCase();
+    const lines = group.lines;
 
-    // 1. STEPPER WORKFLOW ("Các bước giải")
+    // 1. STEPPER WORKFLOW (Only when title indicates steps and lines have "Bước 1"...)
+    const hasExplicitSteps = lines.some((l) => /^bước\s*\d+/i.test(l));
     if (
-      groupTitleLower.includes("các bước") ||
-      groupTitleLower.includes("quy trình giải") ||
-      group.lines.some((l) => /^bước\s*\d+/i.test(l))
+      (groupTitleLower.includes("các bước") ||
+        groupTitleLower.includes("quy trình giải")) &&
+      hasExplicitSteps
     ) {
       const steps = [];
       let currentStep = null;
 
-      for (const line of group.lines) {
+      for (const line of lines) {
         const stepMatch = line.match(/^(bước\s*\d+[:\.]?)\s*(.*)$/i);
         if (stepMatch) {
           currentStep = {
@@ -921,65 +1315,39 @@ const parsedSections = computed(() => {
     // 2. TOPIC CARDS GRID ("Một số dạng thường gặp")
     if (
       groupTitleLower.includes("dạng thường gặp") ||
-      groupTitleLower.includes("các dạng toán") ||
-      group.lines.some((l) => /^(Toán về|Chuyển động|Năng suất|Phần trăm|Hình học)[:\-]/i.test(l))
+      groupTitleLower.includes("các dạng toán")
     ) {
       const topics = [];
+      const topicThemes = [
+        { theme: "blue", color: "#2563EB", icon: "mdi-numeric" },
+        { theme: "amber", color: "#D97706", icon: "mdi-speedometer" },
+        { theme: "emerald", color: "#059669", icon: "mdi-cog-sync" },
+        { theme: "purple", color: "#7C3AED", icon: "mdi-percent" },
+        { theme: "indigo", color: "#4F46E5", icon: "mdi-shape" },
+      ];
 
-      for (const line of group.lines) {
+      for (let tIdx = 0; tIdx < lines.length; tIdx++) {
+        const line = lines[tIdx];
         const colonIdx = line.indexOf(":");
-        if (colonIdx > 0 && colonIdx < 35) {
+        const themeObj = topicThemes[topics.length % topicThemes.length];
+
+        if (colonIdx > 0 && colonIdx < 40) {
           const name = line.substring(0, colonIdx).trim();
           const desc = line.substring(colonIdx + 1).trim();
-
-          let theme = "blue";
-          let icon = "mdi-lightbulb-outline";
-          let color = "#3B82F6";
-          let formula = "";
-
-          const nameLower = name.toLowerCase();
-          if (nameLower.includes("số")) {
-            theme = "blue";
-            icon = "mdi-numeric";
-            color = "#2563EB";
-            formula = "Dạng số: 10a + b";
-          } else if (nameLower.includes("chuyển động")) {
-            theme = "amber";
-            icon = "mdi-speedometer";
-            color = "#D97706";
-            formula = "s = v × t (vận tốc × thời gian)";
-          } else if (nameLower.includes("năng suất") || nameLower.includes("công việc")) {
-            theme = "emerald";
-            icon = "mdi-cog-sync";
-            color = "#059669";
-            formula = "Năng suất = 1 / t";
-          } else if (nameLower.includes("phần trăm") || nameLower.includes("tăng giảm")) {
-            theme = "purple";
-            icon = "mdi-percent";
-            color = "#7C3AED";
-            formula = "Mới = (1 + p/100) × Cũ";
-          } else if (nameLower.includes("hình")) {
-            theme = "indigo";
-            icon = "mdi-shape-polygon-plus";
-            color = "#4F46E5";
-            formula = "Chu vi = 2(a + b); S = a × b";
-          }
-
           topics.push({
             name,
             desc,
-            theme,
-            icon,
-            color,
-            formula,
+            theme: themeObj.theme,
+            icon: themeObj.icon,
+            color: themeObj.color,
           });
         } else {
           topics.push({
-            name: "Lưu ý dạng bài",
+            name: `Dạng ${topics.length + 1}`,
             desc: line,
-            theme: "blue",
-            icon: "mdi-information-outline",
-            color: "#3B82F6",
+            theme: themeObj.theme,
+            icon: themeObj.icon,
+            color: themeObj.color,
           });
         }
       }
@@ -995,86 +1363,268 @@ const parsedSections = computed(() => {
 
     // 3. DETAILED THEORY & EXAMPLES
     const blocks = [];
-    const lines = group.lines;
 
     for (let j = 0; j < lines.length; j++) {
       const line = lines[j];
       if (!line) continue;
 
-      // Check if line introduces a Procedure ("Cách làm:", "Quy tắc:", "Phương pháp thế:") inside this section
-      const procMatch = line.match(/^(cách làm|cách giải|quy tắc[^:\.]*|phương pháp[^:\.]*)[:\.]?$/i);
-      if (procMatch || line.toLowerCase().startsWith("cách làm")) {
-        const steps = [];
+      // A. Procedure block ("Cách làm:", "Quy tắc:", "Phương pháp:", "Các bước:")
+      const procMatch = line.match(
+        /^(cách làm|cách giải|quy tắc[^:\.]*|phương pháp[^:\.]*|các bước[^:\.]*)[:\.]?$/i,
+      );
+      if (
+        procMatch ||
+        line.toLowerCase().startsWith("cách làm:") ||
+        line.toLowerCase().startsWith("cách giải:") ||
+        line.toLowerCase().startsWith("các bước:")
+      ) {
+        const procSteps = [];
         while (j + 1 < lines.length) {
           const nextL = lines[j + 1];
           if (
             isSectionHeading(nextL) ||
             /^ví dụ/i.test(nextL) ||
-            /^(cách làm|cách giải|quy tắc|phương pháp)[:\.]?$/i.test(nextL)
+            /^(cách làm|cách giải|quy tắc|phương pháp|các bước)[:\.]?$/i.test(
+              nextL,
+            ) ||
+            /^bài tập/i.test(nextL)
           ) {
             break;
           }
           j++;
-          steps.push({ text: nextL });
+          procSteps.push({ text: nextL });
         }
         blocks.push({
           type: "procedure",
-          title: line.replace(/[:\.]\s*$/, "").trim() || "Cách làm",
-          steps,
+          title: line.replace(/[:\.]\s*$/, "").trim() || "Cách thực hiện",
+          steps: procSteps,
         });
         continue;
       }
 
-      // Core formula definition
-      if (line.includes("ax + by = c") && (line.includes("dạng") || line.includes("Phương trình"))) {
+      // B. Table block (consecutive lines with 2+ columns separated by 2+ spaces / tabs)
+      const isTableRow = (l) => {
+        if (!l) return false;
+        const cols = l
+          .split(/\t|\s{2,}/)
+          .map((s) => s.trim())
+          .filter(Boolean);
+        return cols.length >= 2;
+      };
+
+      if (
+        isTableRow(line) &&
+        j + 1 < lines.length &&
+        isTableRow(lines[j + 1])
+      ) {
+        const headerCols = line
+          .split(/\t|\s{2,}/)
+          .map((s) => s.trim())
+          .filter(Boolean);
+        const rows = [];
+        while (j + 1 < lines.length && isTableRow(lines[j + 1])) {
+          j++;
+          const rowCols = lines[j]
+            .split(/\t|\s{2,}/)
+            .map((s) => s.trim())
+            .filter(Boolean);
+          rows.push(rowCols);
+        }
+        blocks.push({
+          type: "table",
+          title: "",
+          headers: headerCols,
+          rows,
+        });
+        continue;
+      }
+
+      // C. Consecutive Condition / Cases block (e.g. "Nếu a ≠ 0, b ≠ 0:...", "OM < R:...", "Nếu c > 0...")
+      const isConditionLine = (l) => {
+        if (!l) return false;
+        if (/^nếu\s+/i.test(l)) return true;
+        if (
+          /^[A-Za-z0-9\s]{1,15}\s*[\<\>\=\≤\≥≠]\s*[A-Za-z0-9\s]{1,15}[:\.]\s*/.test(
+            l,
+          )
+        )
+          return true;
+        if (/^với\s+[a-z0-9\s\<\>\=\≤\≥≠]+[:\.]/i.test(l)) return true;
+        return false;
+      };
+
+      if (
+        isConditionLine(line) &&
+        (j + 1 >= lines.length ||
+          isConditionLine(lines[j + 1]) ||
+          line.startsWith("Nếu"))
+      ) {
+        const casesList = [];
+        const parseCaseItem = (l) => {
+          let cond = "";
+          let desc = l;
+          if (l.includes(":")) {
+            const idx = l.indexOf(":");
+            cond = l.substring(0, idx).trim();
+            desc = l.substring(idx + 1).trim();
+          } else if (/thì\s+/i.test(l)) {
+            const parts = l.split(/thì\s+/i);
+            cond = parts[0].trim();
+            desc = parts.slice(1).join("thì ").trim();
+          }
+          return { condition: cond || l, desc: desc || "" };
+        };
+
+        casesList.push(parseCaseItem(line));
+        while (j + 1 < lines.length && isConditionLine(lines[j + 1])) {
+          j++;
+          casesList.push(parseCaseItem(lines[j]));
+        }
+
+        blocks.push({
+          type: "cases",
+          title: "Các trường hợp & điều kiện xét",
+          cases: casesList,
+        });
+        continue;
+      }
+
+      // D. Practice / Exercise block (Bài tập: ... Đáp số: ...)
+      if (/^bài tập[:\.]?/i.test(line) || /^luyện tập[:\.]?/i.test(line)) {
+        const problemPart = line
+          .replace(/^(bài tập|luyện tập)[:\.]?\s*/i, "")
+          .trim();
+        let answers = "";
+        const items = problemPart ? [problemPart] : [];
+
+        while (j + 1 < lines.length) {
+          const nextL = lines[j + 1];
+          if (isSectionHeading(nextL) || /^ví dụ/i.test(nextL)) break;
+          j++;
+          if (/^đáp số[:\.]?/i.test(nextL) || /^hướng dẫn[:\.]?/i.test(nextL)) {
+            answers = nextL.replace(/^(đáp số|hướng dẫn)[:\.]?\s*/i, "").trim();
+          } else {
+            items.push(nextL);
+          }
+        }
+
+        blocks.push({
+          type: "exercise",
+          title: "Bài tập tự luyện",
+          items,
+          answers,
+        });
+        continue;
+      }
+
+      // E. Inline Note / Warning / Tip (Chú ý:, Lưu ý:, Nhận xét:, Ghi nhớ:, Lỗi hay gặp:)
+      if (
+        /^(chú ý|lưu ý|nhận xét|ghi nhớ|lỗi hay gặp|cảnh báo|mẹo)[:\.]\s*/i.test(
+          line,
+        )
+      ) {
+        const colonIdx = line.indexOf(":");
+        const title = line.substring(0, colonIdx).trim();
+        const desc = line.substring(colonIdx + 1).trim();
+        let tone = "amber";
+        let icon = "mdi-alert-circle-outline";
+        if (/lỗi|cảnh báo/i.test(title)) {
+          tone = "red";
+          icon = "mdi-alert-octagon-outline";
+        } else if (/ghi nhớ/i.test(title)) {
+          tone = "purple";
+          icon = "mdi-star-outline";
+        } else if (/nhận xét/i.test(title)) {
+          tone = "blue";
+          icon = "mdi-information-outline";
+        }
+
+        blocks.push({
+          type: "note",
+          title,
+          desc,
+          tone,
+          icon,
+        });
+        continue;
+      }
+
+      // F. Definition of general form (e.g. "... có dạng ax + by = c, trong đó...")
+      const formMatch = line.match(/^(.+?)\s+có dạng\s+([^,]+)(?:,\s*(.+))?$/i);
+      if (
+        formMatch &&
+        (j === 0 ||
+          groupTitleLower.includes("khái niệm") ||
+          groupTitleLower.includes("định nghĩa") ||
+          groupTitleLower.includes("phương trình bậc nhất"))
+      ) {
         blocks.push({
           type: "definition",
-          title: "Dạng tổng quát",
-          formula: "ax + by = c",
-          text: line,
-          badges: ["a, b, c là số cho trước", "a, b không đồng thời bằng 0"],
+          title: formMatch[1].trim(),
+          formula: formMatch[2].trim(),
+          text: formMatch[3] ? `Trong đó ${formMatch[3].trim()}` : "",
         });
         continue;
       }
 
-      // System of equations
-      if (line.includes("Hệ có dạng") || line.includes("hệ hai phương trình")) {
-        let eq1 = "ax + by = c";
-        let eq2 = "a'x + b'y = c'";
-        if (lines[j + 1] && lines[j + 1].includes("ax + by")) {
-          eq1 = lines[j + 1];
+      // G. System of equations (e.g. "Hệ có dạng:" followed by equations)
+      if (line.toLowerCase().startsWith("hệ có dạng")) {
+        const eqLines = [];
+        while (
+          j + 1 < lines.length &&
+          (lines[j + 1].includes("=") ||
+            lines[j + 1].includes("+") ||
+            lines[j + 1].includes("-")) &&
+          !lines[j + 1].includes(":") &&
+          !isSectionHeading(lines[j + 1])
+        ) {
           j++;
+          eqLines.push(lines[j]);
         }
-        if (lines[j + 1] && lines[j + 1].includes("a'x + b'y")) {
-          eq2 = lines[j + 1];
-          j++;
+        if (eqLines.length >= 2) {
+          blocks.push({
+            type: "system-equation",
+            eq1: eqLines[0],
+            eq2: eqLines[1],
+            text: line.includes(":")
+              ? line.substring(0, line.indexOf(":")).trim()
+              : line,
+          });
+          continue;
         }
+      }
+
+      // H. Definition / Theorem / Concept (Định nghĩa:, Khái niệm:, Định lí:, Hệ quả:, Quy tắc:, Nghiệm:)
+      const defMatch = line.match(
+        /^(định nghĩa|khái niệm|định lí|hệ quả|tính chất|quy tắc[^:]*|nghiệm của hệ|nghiệm)[:\.]\s*(.*)$/i,
+      );
+      if (defMatch) {
+        const label = defMatch[1];
+        const body = defMatch[2];
         blocks.push({
-          type: "system-equation",
-          eq1,
-          eq2,
-          text: "Trong đó mỗi phương trình đều là phương trình bậc nhất hai ẩn.",
+          type: "concept",
+          label: label.charAt(0).toUpperCase() + label.slice(1),
+          text: body,
         });
         continue;
       }
 
-      // RICH EXAMPLES (Ví dụ 1, Ví dụ 2, hoặc Ví dụ:)
-      const egMatch = line.match(/^ví dụ(\s*\d+)?\s*(\([^\)]+\))?[:\.]?\s*(.*)$/i);
+      // I. RICH EXAMPLES (Ví dụ 1, Ví dụ 2, hoặc Ví dụ:)
+      const egMatch = line.match(
+        /^ví dụ(\s*\d+)?\s*(\([^\)]+\))?[:\.]?\s*(.*)$/i,
+      );
       if (egMatch) {
-        const egNum = egMatch[1] || "";
-        const tag = egMatch[2] || "";
-        const problemDesc = egMatch[3] || "";
+        const egNum = egMatch[1]?.trim() || "";
+        const tag = egMatch[2]?.trim() || "";
+        let problemDesc = egMatch[3]?.trim() || "";
 
         let themeColor = "#10B981";
         let themeIcon = "mdi-play-circle-outline";
-        if (tag.includes("hình học")) {
-          themeColor = "#2563EB";
+        if (tag.includes("hình")) {
+          themeColor = "#4F46E5";
           themeIcon = "mdi-shape";
-        } else if (tag.includes("mua bán")) {
-          themeColor = "#D97706";
-          themeIcon = "mdi-cart";
         } else if (tag.includes("chuyển động")) {
-          themeColor = "#7C3AED";
+          themeColor = "#D97706";
           themeIcon = "mdi-car";
         }
 
@@ -1082,89 +1632,88 @@ const parsedSections = computed(() => {
         const stepChecks = [];
         let conclusion = "";
 
+        // If problemDesc contains multiple items separated by semicolons outside parentheses (e.g. "2x + y = 3; x - 5y = 0; ...")
+        const hasTopLevelSemicolon = problemDesc
+          .replace(/\([^)]*\)/g, "")
+          .includes(";");
+        if (hasTopLevelSemicolon && !problemDesc.toLowerCase().includes("hệ")) {
+          const subItems = problemDesc
+            .split(/;\s*(?![^()]*\))/)
+            .map((s) => s.trim().replace(/\.$/, ""))
+            .filter(Boolean);
+          problemDesc = "Các phương trình mẫu:";
+          solutionPhases.push({
+            type: "general",
+            label: "Phương trình ví dụ",
+            icon: "mdi-format-list-checks",
+            steps: subItems.map((item) => ({
+              isMath: true,
+              text: item,
+            })),
+          });
+        } else if (/\.\s+(?=[A-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝĐ0-9])/.test(problemDesc)) {
+          // If problemDesc has multiple sentences on the same line (problem + steps)
+          const sentences = problemDesc
+            .split(/\.\s+(?=[A-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝĐ0-9])/)
+            .map((s) => s.trim())
+            .filter(Boolean);
+          if (sentences.length > 1) {
+            problemDesc = sentences[0];
+            for (let sIdx = 1; sIdx < sentences.length; sIdx++) {
+              const sLine = sentences[sIdx];
+              if (
+                /^(kết luận[:\.]?|đáp số[:\.]?|vậy)\s*/i.test(sLine) ||
+                sLine.endsWith("∎")
+              ) {
+                conclusion = sLine
+                  .replace(/^(kết luận[:\.]?|đáp số[:\.]?|vậy)\s*/i, "")
+                  .trim();
+              } else {
+                const subSteps = splitIntoSteps(sLine);
+                solutionPhases.push({
+                  type: "general",
+                  label: "Thao tác giải",
+                  icon: "mdi-arrow-right-thin",
+                  steps: subSteps,
+                });
+              }
+            }
+          }
+        }
+
         while (j + 1 < lines.length) {
           const nextL = lines[j + 1];
-          if (isSectionHeading(nextL) || /^ví dụ/i.test(nextL)) break;
+          if (
+            isSectionHeading(nextL) ||
+            /^ví dụ/i.test(nextL) ||
+            /^bài tập/i.test(nextL) ||
+            /^(chú ý|lưu ý|lỗi hay gặp|cảnh báo)[:\.]/i.test(nextL) ||
+            /^(định nghĩa|khái niệm|định lí|hệ quả|tính chất|nghiệm của hệ|nghiệm)[:\.]/i.test(
+              nextL,
+            ) ||
+            /^(cách làm|cách giải|quy tắc|phương pháp|các bước)[:\.]/i.test(
+              nextL,
+            ) ||
+            /^hệ có dạng/i.test(nextL)
+          ) {
+            break;
+          }
           j++;
 
-          if (/^(kết luận[:\.]?|vậy|đáp số[:\.]?)\s*/i.test(nextL)) {
-            conclusion = nextL.replace(/^(kết luận[:\.]?|vậy|đáp số[:\.]?)\s*/i, "").trim();
-            continue;
-          }
-
-          // Case: Choose variables and condition
-          if (/^gọi\s+[a-z]/i.test(nextL)) {
-            solutionPhases.push({
-              type: "variable",
-              label: "Bước 1: Chọn ẩn & Đặt điều kiện",
-              icon: "mdi-variable",
-              content: nextL,
-              steps: [{ isMath: false, text: nextL }],
-            });
-            continue;
-          }
-
-          // Case: Set up system of equations
-          if (/^ta có hệ[:\.]?/i.test(nextL) || /^hệ phương trình[:\.]?/i.test(nextL)) {
-            const eqLines = [nextL.replace(/^ta có hệ[:\.]?\s*/i, "").trim()].filter(Boolean);
-            while (
-              j + 1 < lines.length &&
-              (lines[j + 1].includes("=") || lines[j + 1].includes("+") || lines[j + 1].includes("-")) &&
-              !lines[j + 1].includes(":") &&
-              !lines[j + 1].toLowerCase().includes("kết luận") &&
-              !lines[j + 1].toLowerCase().includes("cộng") &&
-              !lines[j + 1].toLowerCase().includes("trừ") &&
-              !lines[j + 1].toLowerCase().includes("nhân")
-            ) {
-              j++;
-              eqLines.push(lines[j]);
-            }
-            solutionPhases.push({
-              type: "system",
-              label: "Bước 2: Lập hệ phương trình",
-              icon: "mdi-code-brackets",
-              formulaLines: eqLines,
-            });
-            continue;
-          }
-
-          // Case: Multi-step calculation with numbers (Cộng hai phương trình, Trừ từng vế, Nhân, Từ phương trình 1...)
+          // Conclusion
           if (
-            nextL.toLowerCase().includes("cộng") ||
-            nextL.toLowerCase().includes("trừ") ||
-            nextL.toLowerCase().includes("nhân") ||
-            nextL.toLowerCase().includes("thế vào") ||
-            nextL.toLowerCase().includes("thay vào") ||
-            nextL.toLowerCase().includes("từ phương trình") ||
-            nextL.toLowerCase().includes("từ đó")
+            /^(kết luận[:\.]?|đáp số[:\.]?|vậy)\s*/i.test(nextL) ||
+            nextL.endsWith("∎")
           ) {
-            const steps = parseMathCalculationSteps(nextL);
-
-            while (
-              j + 1 < lines.length &&
-              /^[0-9a-z\s\+\-\*\/\=]{4,30}$/i.test(lines[j + 1]) &&
-              lines[j + 1].includes("=") &&
-              !lines[j + 1].includes(":")
-            ) {
-              j++;
-              steps.push({
-                isMath: true,
-                text: lines[j],
-              });
-            }
-
-            solutionPhases.push({
-              type: "solve",
-              label: "Biến đổi & Giải phương trình",
-              icon: "mdi-calculator-variant-outline",
-              steps,
-            });
+            conclusion = nextL
+              .replace(/^(kết luận[:\.]?|đáp số[:\.]?|vậy)\s*/i, "")
+              .trim();
             continue;
           }
 
-          // Case: Verification checks (Phương trình 1: 2 + 1 = 3 ✓)
-          if (nextL.includes("✓") || nextL.includes("✗") || (nextL.includes("nghiệm") && nextL.includes("thỏa"))) {
-            const isValid = nextL.includes("✓") || nextL.includes("thỏa") || nextL.includes("là nghiệm");
+          // Tick / Cross check
+          if (nextL.includes("✓") || nextL.includes("✗")) {
+            const isValid = nextL.includes("✓");
             stepChecks.push({
               calc: nextL.replace(/[✓✗]/g, "").trim(),
               label: isValid ? "Thỏa mãn điều kiện" : "Không thỏa mãn",
@@ -1173,18 +1722,37 @@ const parsedSections = computed(() => {
             continue;
           }
 
-          // General step
+          // Multi-step calculations and reasoning: split each discrete step on its own row!
+          const subSteps = splitIntoSteps(nextL);
+          let phaseLabel = "Thao tác giải";
+          let phaseType = "general";
+          let phaseIcon = "mdi-arrow-right-thin";
+
+          if (/^gọi\s+/i.test(nextL)) {
+            phaseLabel = "Chọn ẩn & Điều kiện";
+            phaseType = "variable";
+            phaseIcon = "mdi-variable";
+          } else if (/^ta có hệ|^hệ phương trình/i.test(nextL)) {
+            phaseLabel = "Lập hệ phương trình";
+            phaseType = "system";
+            phaseIcon = "mdi-code-brackets";
+          } else if (/cộng|trừ|nhân|chia|thế|thay|khử/i.test(nextL)) {
+            phaseLabel = "Biến đổi & Tính toán";
+            phaseType = "solve";
+            phaseIcon = "mdi-calculator-variant-outline";
+          }
+
           solutionPhases.push({
-            type: "general",
-            label: "Thao tác giải",
-            icon: "mdi-arrow-right-thin",
-            steps: [{ isMath: false, text: nextL }],
+            type: phaseType,
+            label: phaseLabel,
+            icon: phaseIcon,
+            steps: subSteps,
           });
         }
 
         blocks.push({
           type: "example",
-          badgeTitle: `Ví dụ ${egNum} ${tag}`.trim(),
+          badgeTitle: `Ví dụ ${egNum} ${tag}`.trim() || "Ví dụ minh họa",
           subtitle: tag ? `Dạng bài ${tag.replace(/[\(\)]/g, "")}` : "",
           problemText: problemDesc,
           themeColor,
@@ -1193,47 +1761,22 @@ const parsedSections = computed(() => {
           stepChecks,
           conclusion,
         });
-        continue;
-      }
 
-      // Graphing Oxy (Only when lesson actually teaches graphing)
-      if (line.includes("Vẽ đường thẳng x + 2y = 4") && group.lines.some((l) => l.includes("Oxy"))) {
-        blocks.push({
-          type: "visual-graph",
-          text: line,
-        });
-        continue;
-      }
-
-      // Position cases
-      if (line.startsWith("Nếu a ≠ 0") || line.startsWith("Nếu b = 0") || line.startsWith("Nếu a = 0")) {
-        blocks.push({
-          type: "cases",
-          cases: [
-            {
-              condition: "a ≠ 0, b ≠ 0",
-              badge: "Cắt cả 2 trục",
-              desc: "Đường thẳng cắt Ox và Oy tại 2 điểm phân biệt. Nối 2 điểm này để vẽ đồ thị.",
-            },
-            {
-              condition: "b = 0 (ax = c)",
-              badge: "Song song với Oy",
-              desc: "Đường thẳng x = c/a song song với trục tung Oy.",
-            },
-            {
-              condition: "a = 0 (by = c)",
-              badge: "Song song với Ox",
-              desc: "Đường thẳng y = c/b song song với trục hoành Ox.",
-            },
-          ],
-        });
-        while (j + 1 < lines.length && (lines[j + 1].startsWith("Nếu b = 0") || lines[j + 1].startsWith("Nếu a = 0"))) {
-          j++;
+        // If this is the specific graphing example, show visual graph optionally
+        if (
+          problemDesc.includes("Vẽ đường thẳng x + 2y = 4") ||
+          (lines.some((l) => l.includes("x + 2y = 4")) &&
+            group.lines.some((l) => l.includes("Oxy")))
+        ) {
+          blocks.push({
+            type: "visual-graph",
+            text: "x + 2y = 4",
+          });
         }
         continue;
       }
 
-      // Fallback paragraph
+      // J. Fallback paragraph
       blocks.push({
         type: "paragraph",
         text: line,
@@ -1264,6 +1807,7 @@ const extractedTips = computed(() => {
     { icon: "mdi-alert-circle-outline", color: "amber" },
     { icon: "mdi-lightbulb-on-outline", color: "blue" },
     { icon: "mdi-checkbox-marked-circle-outline", color: "emerald" },
+    { icon: "mdi-alert-octagon-outline", color: "red" },
     { icon: "mdi-star-outline", color: "purple" },
   ];
 
@@ -1276,15 +1820,15 @@ const extractedTips = computed(() => {
       lower.startsWith("lưu ý:") ||
       lower.startsWith("nhận xét:") ||
       lower.startsWith("ghi nhớ:") ||
-      lower.startsWith("đối chiếu nghiệm") ||
-      lower.includes("chú ý chuyển động") ||
-      lower.includes("coi cả công việc")
+      lower.startsWith("lỗi hay gặp:") ||
+      lower.startsWith("cảnh báo:") ||
+      lower.startsWith("mẹo:")
     ) {
       const colonIdx = line.indexOf(":");
       let title = "Lưu ý quan trọng";
       let desc = line;
 
-      if (colonIdx > 0 && colonIdx < 30) {
+      if (colonIdx > 0 && colonIdx < 35) {
         title = line.substring(0, colonIdx).trim();
         desc = line.substring(colonIdx + 1).trim();
       }
@@ -1319,18 +1863,17 @@ async function loadLesson() {
   lessonQuestions.value = [];
 
   try {
-    const lessonResponse = await getLessonByIdApi(route.params.lessonId);
-    const chapterResponse = await getChapterByIdApi(lessonResponse.data.chapterId);
-    const chaptersResponse = await getChaptersByBookApi(chapterResponse.data.bookId);
-    const chapterLessons = await Promise.all(
-      chaptersResponse.data.map(async (item) => {
-        const lessonsResponse = await getLessonsByChapterApi(item.id);
-        return lessonsResponse.data;
-      }),
+    const lessonResponse = await getLessonByIdApi(
+      route.params.lessonId,
+      route.query.chapterId,
     );
-
+    const chapterResponse = await getChapterByIdApi(
+      lessonResponse.data.chapterId,
+    );
     try {
-      const questionsResponse = await getQuestionsByLessonApi(route.params.lessonId);
+      const questionsResponse = await getQuestionsByLessonApi(
+        route.params.lessonId,
+      );
       lessonQuestions.value = questionsResponse.data || [];
     } catch (qErr) {
       console.warn("Không thể tải danh sách câu hỏi cho bài này:", qErr);
@@ -1341,15 +1884,37 @@ async function loadLesson() {
 
     lesson.value = lessonResponse.data;
     chapter.value = chapterResponse.data;
-    sequence.value = chapterLessons.flat();
-
-    if (!sequence.value.some((item) => item.id === lessonResponse.data.id)) {
-      throw new Error("Không tìm thấy bài học trong danh sách của sách.");
+    loading.value = false;
+    // Show the requested lesson before loading optional previous/next links.
+    sequence.value = [lessonResponse.data];
+    try {
+      const chaptersResponse = await getChaptersByBookApi(
+        chapterResponse.data.bookId,
+      );
+      const chapterLessons = await Promise.all(
+        chaptersResponse.data.map(async (item) => {
+          const lessonsResponse = await getLessonsByChapterApi(item.id);
+          return lessonsResponse.data || [];
+        }),
+      );
+      if (requestId !== loadRequestId) return;
+      const allLessons = chapterLessons.flat();
+      sequence.value = allLessons.some(
+        (item) => Number(item.id) === Number(lessonResponse.data.id),
+      )
+        ? allLessons
+        : [lessonResponse.data, ...allLessons];
+    } catch (sequenceError) {
+      console.warn("Không thể tải danh sách điều hướng bài học:", sequenceError);
+      sequence.value = [lessonResponse.data];
     }
   } catch (err) {
     if (requestId !== loadRequestId) return;
     console.error("Lỗi tải nội dung bài học:", err);
-    error.value = err.response?.data?.message || err.message || "Không thể tải nội dung bài học.";
+    error.value =
+      err.response?.data?.message ||
+      err.message ||
+      "Không thể tải nội dung bài học.";
   } finally {
     if (requestId === loadRequestId) loading.value = false;
   }
@@ -1357,7 +1922,10 @@ async function loadLesson() {
 
 function goBack() {
   if (chapter.value?.bookId) {
-    router.push({ name: "teacher-lessons", query: { bookId: chapter.value.bookId } });
+    router.push({
+      name: "teacher-lessons",
+      query: { bookId: chapter.value.bookId },
+    });
     return;
   }
   router.push({ name: "teacher-books" });
@@ -1365,7 +1933,14 @@ function goBack() {
 
 function navigateTo(target) {
   if (!target) return;
-  router.push({ name: "teacher-lesson-detail", params: { lessonId: target.id } });
+  router.push({
+    name: "teacher-lesson-detail",
+    params: { lessonId: target.id },
+    query: {
+      ...route.query,
+      chapterId: String(target.chapterId),
+    },
+  });
 }
 
 watch(() => route.params.lessonId, loadLesson, { immediate: true });
@@ -1554,9 +2129,15 @@ watch(() => route.params.lessonId, loadLesson, { immediate: true });
 }
 
 /* Font Size Modifiers */
-.font-small { font-size: 14.5px; }
-.font-normal { font-size: 16px; }
-.font-large { font-size: 18px; }
+.font-small {
+  font-size: 14.5px;
+}
+.font-normal {
+  font-size: 16px;
+}
+.font-large {
+  font-size: 18px;
+}
 
 /* Section Card */
 .section-card {
@@ -1865,11 +2446,26 @@ watch(() => route.params.lessonId, loadLesson, { immediate: true });
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.topic-theme--blue { border-color: #bfdbfe; background: #f0f7ff; }
-.topic-theme--amber { border-color: #fde68a; background: #fffdf5; }
-.topic-theme--emerald { border-color: #a7f3d0; background: #f0fdf4; }
-.topic-theme--purple { border-color: #e9d5ff; background: #faf5ff; }
-.topic-theme--indigo { border-color: #c7d2fe; background: #eef2ff; }
+.topic-theme--blue {
+  border-color: #bfdbfe;
+  background: #f0f7ff;
+}
+.topic-theme--amber {
+  border-color: #fde68a;
+  background: #fffdf5;
+}
+.topic-theme--emerald {
+  border-color: #a7f3d0;
+  background: #f0fdf4;
+}
+.topic-theme--purple {
+  border-color: #e9d5ff;
+  background: #faf5ff;
+}
+.topic-theme--indigo {
+  border-color: #c7d2fe;
+  background: #eef2ff;
+}
 
 .topic-card-top {
   display: flex;
@@ -1992,10 +2588,18 @@ watch(() => route.params.lessonId, loadLesson, { immediate: true });
   border: 1px solid #e2e8f0;
 }
 
-.phase--variable { border-left: 4px solid #3b82f6; }
-.phase--system { border-left: 4px solid #8b5cf6; }
-.phase--solve { border-left: 4px solid #f59e0b; }
-.phase--general { border-left: 4px solid #94a3b8; }
+.phase--variable {
+  border-left: 4px solid #3b82f6;
+}
+.phase--system {
+  border-left: 4px solid #8b5cf6;
+}
+.phase--solve {
+  border-left: 4px solid #f59e0b;
+}
+.phase--general {
+  border-left: 4px solid #94a3b8;
+}
 
 .phase-header {
   font-size: 12.5px;
@@ -2337,7 +2941,9 @@ watch(() => route.params.lessonId, loadLesson, { immediate: true });
   display: block;
 }
 
-.svg-point { cursor: pointer; }
+.svg-point {
+  cursor: pointer;
+}
 
 .point-pulse {
   opacity: 0.25;
@@ -2345,9 +2951,18 @@ watch(() => route.params.lessonId, loadLesson, { immediate: true });
 }
 
 @keyframes pulse {
-  0% { r: 6; opacity: 0.35; }
-  50% { r: 12; opacity: 0.1; }
-  100% { r: 6; opacity: 0.35; }
+  0% {
+    r: 6;
+    opacity: 0.35;
+  }
+  50% {
+    r: 12;
+    opacity: 0.1;
+  }
+  100% {
+    r: 6;
+    opacity: 0.35;
+  }
 }
 
 .point-explanation-card {
@@ -2367,8 +2982,12 @@ watch(() => route.params.lessonId, loadLesson, { immediate: true });
   font-weight: 800;
   color: #ffffff;
 }
-.pt-blue { background: #2563eb; }
-.pt-green { background: #059669; }
+.pt-blue {
+  background: #2563eb;
+}
+.pt-green {
+  background: #059669;
+}
 
 .draw-tip-card {
   padding: 10px 12px;
@@ -2419,10 +3038,24 @@ watch(() => route.params.lessonId, loadLesson, { immediate: true });
   border-radius: 8px;
   border: 1px solid #e2e8f0;
 }
-.step-check--valid { border-left: 4px solid #10b981; background: #f0fdf4; }
-.step-check--invalid { border-left: 4px solid #ef4444; background: #fef2f2; }
-.step-calc { font-family: monospace; font-weight: 700; font-size: 14px; color: #0f172a; }
-.step-label { font-size: 11px; color: #64748b; }
+.step-check--valid {
+  border-left: 4px solid #10b981;
+  background: #f0fdf4;
+}
+.step-check--invalid {
+  border-left: 4px solid #ef4444;
+  background: #fef2f2;
+}
+.step-calc {
+  font-family: monospace;
+  font-weight: 700;
+  font-size: 14px;
+  color: #0f172a;
+}
+.step-label {
+  font-size: 11px;
+  color: #64748b;
+}
 
 /* 10. Recap Section */
 .recap-section {
@@ -2468,10 +3101,22 @@ watch(() => route.params.lessonId, loadLesson, { immediate: true });
   justify-content: center;
   margin-bottom: 12px;
 }
-.recap-blue { background: #eff6ff; color: #2563eb; }
-.recap-emerald { background: #ecfdf5; color: #059669; }
-.recap-purple { background: #f5f3ff; color: #7c3aed; }
-.recap-amber { background: #fffbeb; color: #d97706; }
+.recap-blue {
+  background: #eff6ff;
+  color: #2563eb;
+}
+.recap-emerald {
+  background: #ecfdf5;
+  color: #059669;
+}
+.recap-purple {
+  background: #f5f3ff;
+  color: #7c3aed;
+}
+.recap-amber {
+  background: #fffbeb;
+  color: #d97706;
+}
 
 .recap-card h4 {
   margin: 0 0 6px 0;
@@ -2727,5 +3372,139 @@ watch(() => route.params.lessonId, loadLesson, { immediate: true });
     order: -1;
     margin-bottom: 8px;
   }
+}
+
+/* Table Block */
+.lesson-table-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.table-card-title {
+  display: flex;
+  align-items: center;
+  padding: 12px 18px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  font-weight: 700;
+  font-size: 13.5px;
+  color: #1e293b;
+}
+.table-responsive-wrapper {
+  overflow-x: auto;
+}
+.lesson-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+.lesson-data-table th {
+  background: #f1f5f9;
+  color: #334155;
+  font-weight: 700;
+  padding: 10px 16px;
+  text-align: left;
+  border-bottom: 1px solid #cbd5e1;
+}
+.lesson-data-table td {
+  padding: 10px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #1e293b;
+}
+.lesson-data-table tr:last-child td {
+  border-bottom: none;
+}
+.lesson-data-table tr:hover td {
+  background: #f8fafc;
+}
+
+/* Inline Note Block */
+.lesson-inline-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  margin-bottom: 14px;
+}
+.note--amber {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-left: 4px solid #f59e0b;
+  color: #92400e;
+}
+.note--red {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-left: 4px solid #ef4444;
+  color: #991b1b;
+}
+.note--blue {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-left: 4px solid #3b82f6;
+  color: #1e40af;
+}
+.note--purple {
+  background: #faf5ff;
+  border: 1px solid #e9d5ff;
+  border-left: 4px solid #8b5cf6;
+  color: #6b21a8;
+}
+.note-icon-wrap {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.note-text-wrap {
+  line-height: 1.6;
+  font-size: 13.5px;
+}
+
+/* Exercise Block */
+.exercise-card {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-left: 4px solid #10b981;
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+}
+.exercise-header {
+  display: flex;
+  align-items: center;
+  font-weight: 800;
+  font-size: 14px;
+  color: #065f46;
+  margin-bottom: 12px;
+}
+.exercise-item-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: #1e293b;
+  font-size: 13.5px;
+}
+.exercise-bullet {
+  font-weight: 700;
+  color: #059669;
+}
+.exercise-answers-panel {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed #86efac;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  color: #047857;
 }
 </style>

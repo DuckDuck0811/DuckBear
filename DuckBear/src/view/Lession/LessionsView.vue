@@ -64,9 +64,48 @@
             <span class="chapter-index">{{ chapter.orderIndex }}</span>
             <div class="chapter-heading-text">
               <span class="chapter-name">{{ chapter.title }}</span>
-              <span v-if="chapter.description" class="chapter-description">
-                {{ chapter.description }}
-              </span>
+
+              <div
+                v-if="chapter.description"
+                class="chapter-desc-card"
+                :class="{ 'is-expanded': expandedDesc[chapter.id] }"
+              >
+                <div class="chapter-desc-header">
+                  <span class="desc-badge">
+                    <v-icon size="13" class="mr-1">mdi-bullseye-arrow</v-icon>
+                    {{ parseChapterDesc(chapter.description).prefix }}
+                  </span>
+                  <button
+                    v-if="parseChapterDesc(chapter.description).items.length > 1 || chapter.description.length > 90"
+                    type="button"
+                    class="desc-toggle-btn"
+                    @click.stop="toggleDesc(chapter.id)"
+                  >
+                    {{ expandedDesc[chapter.id] ? "Thu gọn" : "Xem chi tiết" }}
+                    <v-icon size="14">
+                      {{ expandedDesc[chapter.id] ? "mdi-chevron-up" : "mdi-chevron-down" }}
+                    </v-icon>
+                  </button>
+                </div>
+
+                <div class="chapter-desc-body">
+                  <template v-if="expandedDesc[chapter.id]">
+                    <div
+                      v-for="(item, idx) in parseChapterDesc(chapter.description).items"
+                      :key="idx"
+                      class="desc-item"
+                    >
+                      <v-icon size="11" class="desc-dot">mdi-circle-medium</v-icon>
+                      <span>{{ item }}</span>
+                    </div>
+                  </template>
+                  <template v-else>
+                    <p class="desc-preview">
+                      {{ parseChapterDesc(chapter.description).preview }}
+                    </p>
+                  </template>
+                </div>
+              </div>
             </div>
           </div>
           <template #actions>
@@ -99,7 +138,7 @@
               class="lesson-row"
             >
               <v-icon icon="mdi-book-open-outline" size="17" color="#9CA3AF" />
-              <button type="button" class="lesson-name" @click="openLesson(lesson)">
+              <button type="button" class="lesson-name" @click="openLesson(lesson, chapter)">
                 {{ lesson.title }}
               </button>
               <v-spacer />
@@ -295,6 +334,39 @@ const bookId = Number(route.query.bookId);
 const loading = ref(false);
 const book = ref(null);
 const chapters = ref([]);
+const expandedDesc = reactive({});
+
+function toggleDesc(chapterId) {
+  expandedDesc[chapterId] = !expandedDesc[chapterId];
+}
+
+function parseChapterDesc(desc) {
+  if (!desc) return { prefix: "Mục tiêu", items: [], preview: "" };
+  let raw = desc.trim();
+  let prefix = "Yêu cầu cần đạt";
+
+  // Check prefix
+  const prefixMatch = raw.match(/^(Yêu cầu cần đạt|Mục tiêu|Nội dung|Giới thiệu)\s*:\s*/i);
+  if (prefixMatch) {
+    prefix = prefixMatch[1];
+    raw = raw.slice(prefixMatch[0].length).trim();
+  }
+
+  // Split into structured items: by newlines, semicolons or period before capital letter
+  let items = [];
+  if (raw.includes("\n")) {
+    items = raw.split("\n").map(s => s.trim().replace(/^[-*•\d+.]\s*/, "")).filter(Boolean);
+  } else if (raw.includes(";") && raw.split(";").length > 1) {
+    items = raw.split(";").map(s => s.trim().replace(/\.$/, "")).filter(Boolean);
+  } else {
+    // Split sentences by dot followed by whitespace and capital letter
+    const sentences = raw.split(/(?<=\.)\s+(?=[A-ZÀ-Ỹ0-9])/).map(s => s.trim()).filter(Boolean);
+    items = sentences.length > 1 ? sentences : [raw];
+  }
+
+  const preview = items[0] || raw;
+  return { prefix, items, preview };
+}
 
 async function fetchBook() {
   try {
@@ -415,7 +487,7 @@ function openCreateLesson(chapter) {
 
 async function openEditLesson(chapter, lesson) {
   try {
-    const response = await getLessonByIdApi(lesson.id);
+    const response = await getLessonByIdApi(lesson.id, chapter.id);
     activeChapterForLesson.value = chapter;
     editingLesson.value = lesson;
     lessonForm.title = response.data.title;
@@ -458,8 +530,24 @@ async function saveLesson() {
   }
 }
 
-function openLesson(lesson) {
-  router.push({ name: "teacher-lesson-detail", params: { lessonId: lesson.id } });
+async function openLesson(lesson, chapter) {
+  if (!book.value) {
+    try {
+      const response = await getBookByIdApi(bookId);
+      book.value = response.data;
+    } catch (err) {
+      console.error("Không thể tải thông tin môn học:", err);
+    }
+  }
+  router.push({
+    name: "teacher-lesson-detail",
+    params: { lessonId: lesson.id },
+    query: {
+      bookId: String(bookId),
+      chapterId: String(chapter.id),
+      subjectName: book.value?.subjectName || "",
+    },
+  });
 }
 
 /* ---------- Delete (dùng chung) ---------- */
@@ -520,13 +608,19 @@ async function executeDelete() {
 
 .chapter-title-row {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  padding: 2px 0;
 }
 
 .chapter-heading-text {
-  display: grid;
-  gap: 3px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
 }
 
 .chapter-list-heading {
@@ -542,34 +636,121 @@ async function executeDelete() {
   font-size: 18px;
 }
 
-.chapter-list-heading span,
-.chapter-description {
+.chapter-list-heading span {
   color: #6b7280;
   font-size: 12px;
 }
 
-.chapter-description {
-  white-space: normal;
-}
-
 .chapter-index {
-  width: 26px;
-  height: 26px;
-  border-radius: 7px;
-  background: #eef3ff;
-  color: #4f7cff;
-  font-size: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #eef3ff 0%, #e0e9fe 100%);
+  color: #3b66f5;
+  font-size: 13px;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  margin-top: 2px;
+  box-shadow: 0 1px 2px rgba(59, 102, 245, 0.08);
 }
 
 .chapter-name {
+  font-weight: 700;
+  color: #1e293b;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+/* Chapter Description Card */
+.chapter-desc-card {
+  margin-top: 2px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-left: 3px solid #4f7cff;
+  border-radius: 8px;
+  padding: 8px 12px;
+  transition: all 0.2s ease;
+  max-width: 100%;
+}
+
+.chapter-desc-card:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  border-left-color: #3b66f5;
+}
+
+.chapter-desc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.desc-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #3b66f5;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.desc-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  font-size: 11px;
   font-weight: 600;
-  color: #1a1d2e;
-  font-size: 14px;
+  color: #64748b;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.desc-toggle-btn:hover {
+  color: #1e293b;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.chapter-desc-body {
+  font-size: 12.5px;
+  color: #475569;
+  line-height: 1.55;
+}
+
+.desc-preview {
+  margin: 0;
+  color: #475569;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.desc-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  margin-bottom: 4px;
+  color: #334155;
+}
+
+.desc-item:last-child {
+  margin-bottom: 0;
+}
+
+.desc-dot {
+  color: #6366f1;
+  flex-shrink: 0;
+  margin-top: 3px;
 }
 
 /* Lesson rows */

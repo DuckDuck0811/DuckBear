@@ -8,7 +8,7 @@ import LoginRoleSelect from "@/view/Login/LoginRoleSelect.vue";
 import TeacherLayout from "@/layout/TeacherLayout.vue";
 import BookView from "@/view/Book/BookView.vue";
 import LessionsView from "@/view/Lession/LessionsView.vue";
-import LessonDetailView from "@/view/Lession/LessonDetailView.vue";
+import LessonDetailRouteView from "@/view/Lession/LessonDetailRouteView.vue";
 import Question from "@/view/Question/Question.vue";
 import Assignmentbankview from "@/view/Assignment/Assignmentbankview.vue";
 import Assignmentcreateview from "@/view/Assignment/Assignmentcreateview.vue";
@@ -151,7 +151,7 @@ const routes = [
       {
         path: "lessons/:lessonId",
         name: "teacher-lesson-detail",
-        component: LessonDetailView,
+        component: LessonDetailRouteView,
         meta: { title: "Nội dung bài học" },
       },
       {
