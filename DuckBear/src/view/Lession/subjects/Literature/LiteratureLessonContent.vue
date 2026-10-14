@@ -285,8 +285,8 @@
     <section v-if="extractedTips.length" class="lit-recap">
       <header class="lit-recap-head">
         <h3 class="lit-recap-title">
-          <v-icon icon="mdi-book-check-outline" size="20" aria-hidden="true" />
-          Lưu ý &amp; ghi nhớ của bài
+          <v-icon icon="mdi-bookmark-check-outline" size="22" aria-hidden="true" />
+          Ghi nhớ &amp; Lưu ý trọng tâm
         </h3>
       </header>
       <ul class="lit-recap-grid">
@@ -310,12 +310,12 @@
     <section v-if="reviewQuestions.length" class="lit-review">
       <header class="lit-review-head">
         <span class="lit-review-icon" aria-hidden="true">
-          <v-icon icon="mdi-head-question-outline" size="20" />
+          <v-icon icon="mdi-head-question-outline" size="22" />
         </span>
         <div>
-          <h3 class="lit-review-title">Tự kiểm tra bài học</h3>
+          <h3 class="lit-review-title">Câu hỏi đọc hiểu &amp; suy ngẫm</h3>
           <p class="lit-review-subtitle">
-            Câu hỏi ôn tập được tạo từ chính nội dung bài học
+            Hệ thống câu hỏi gợi mở cảm thụ theo sát nội dung văn bản
           </p>
         </div>
       </header>
@@ -340,11 +340,11 @@
               :icon="
                 revealedQuestions.includes(index)
                   ? 'mdi-eye-off-outline'
-                  : 'mdi-lightbulb-on-outline'
+                  : 'mdi-book-search-outline'
               "
               size="17"
             />
-            {{ revealedQuestions.includes(index) ? "Ẩn trích dẫn" : "Xem trích dẫn gợi ý" }}
+            {{ revealedQuestions.includes(index) ? "Ẩn dẫn chứng gợi ý" : "Xem dẫn chứng gợi ý" }}
           </button>
           <blockquote
             v-if="revealedQuestions.includes(index)"
@@ -352,7 +352,7 @@
           >
             <span class="lit-review-source">
               <v-icon icon="mdi-book-open-page-variant-outline" size="15" />
-              Trích từ phần “{{ question.sectionTitle }}”
+              Dẫn chứng từ phần “{{ question.sectionTitle }}”
             </span>
             <p>{{ capitalizeFirstLetter(question.excerpt) }}</p>
           </blockquote>
@@ -699,51 +699,50 @@ const viewSections = computed(() =>
 </script>
 
 <style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600;1,700&display=swap");
+
 /* ══════════════════════════════════════════
-   Design tokens
+   Design tokens – Đậm chất văn học trên nền trắng
 ══════════════════════════════════════════ */
 .lit-page {
   --paper: #ffffff;
-  --paper-2: #f8fafc;
-  --ink: #1f2937;
-  --ink-2: #374151;
-  --ink-3: #6b7280;
-  --rule: #e5e7eb;
-  --rule-2: #f3f4f6;
+  --paper-subtle: #faf8f5;
+  --paper-accent: #f5f0e6;
+  --ink: #1f2421;
+  --ink-2: #3f4441;
+  --ink-3: #6b726d;
+  --rule: #e5ded5;
+  --rule-2: #f0ebe2;
 
-  --seal: #2563eb;
-  --chàm: #475569;
-  --gold: #7c6a4d;
-  --moss: #3f5f52;
-  --blood: #1d4ed8;
+  /* Sắc màu văn chương truyền thống */
+  --seal: #8b1e1e;          /* son đỏ chu sa – nét bút phê, con dấu */
+  --seal-soft: #fcf2f0;
+  --seal-border: #f6c8c4;
+  --chàm: #1e3a5f;          /* lam chàm cổ điển – học thuật, sâu lắng */
+  --chàm-soft: #f1f5fa;
+  --chàm-border: #c8d8ec;
+  --gold: #854d0e;          /* hoàng cúc / nâu hổ phách */
+  --gold-soft: #fefce8;
+  --gold-border: #fef08a;
+  --moss: #245339;          /* xanh rêu cổ thi */
+  --moss-soft: #f0fdf4;
+  --moss-border: #bbf7d0;
+  --blood: #6b1414;
 
-  --display: var(
-    --t-font,
-    "Inter",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif
-  );
-  --serif: var(
-    --t-font,
-    "Inter",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif
-  );
+  --display: "Playfair Display", "Georgia", "Times New Roman", serif;
+  --serif: "Lora", "Merriweather", "Noto Serif", Georgia, serif;
 
   --base: 17px;
 
-  font-family: var(--display);
+  font-family: var(--serif);
   font-size: var(--base);
-  line-height: 1.85;
+  line-height: 1.88;
   color: var(--ink);
-  background: var(--paper);
-  padding: 40px 20px 56px;
+  background: transparent;
+  padding: 0;
   font-variant-numeric: oldstyle-nums;
   text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 .lit-font-small {
@@ -766,17 +765,18 @@ const viewSections = computed(() =>
 }
 
 /* ══════════════════════════════════════════
-   PHẦN – như một chương sách
+   PHẦN – trang sách văn học tinh tuyển
 ══════════════════════════════════════════ */
 .lit-section {
-  max-width: 46rem;
-  margin: 0 auto;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
   position: relative;
-  padding: 1.5rem 1.4rem 1.2rem;
+  padding: 2.25rem 2.2rem 2rem;
   background: #ffffff;
   border: 1px solid var(--rule);
-  border-radius: 18px;
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.03);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(35, 30, 25, 0.04);
 }
 
 .lit-section + .lit-section {
@@ -786,34 +786,34 @@ const viewSections = computed(() =>
 .lit-section-head {
   display: flex;
   align-items: center;
-  gap: 0.9rem;
-  padding: 0.2rem 0 0.8rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid var(--rule);
+  gap: 1rem;
+  padding-bottom: 1.1rem;
+  margin-bottom: 1.6rem;
+  border-bottom: 3px double var(--rule);
 }
 
 .lit-section-icon {
   display: inline-grid;
   flex-shrink: 0;
-  width: 2.2rem;
-  height: 2.2rem;
+  width: 2.5rem;
+  height: 2.5rem;
   place-items: center;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  background: #f8fafc;
-  color: #64748b;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--paper-subtle);
+  color: var(--ink-2);
 }
 .lit-section-icon--author,
 .lit-section-icon--devices {
-  color: #2563eb;
-  background: #eff6ff;
-  border-color: #dbeafe;
+  color: var(--seal);
+  background: var(--seal-soft);
+  border-color: var(--seal-border);
 }
 .lit-section-icon--context,
 .lit-section-icon--timeline {
-  color: #0f766e;
-  background: #f0fdfa;
-  border-color: #ccfbf1;
+  color: var(--chàm);
+  background: var(--chàm-soft);
+  border-color: var(--chàm-border);
 }
 
 .lit-section-num {
@@ -821,14 +821,15 @@ const viewSections = computed(() =>
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.2rem;
-  height: 2.2rem;
-  border-radius: 10px;
-  background: #eff6ff;
-  border: 1px solid #dbeafe;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 8px;
+  background: var(--seal-soft);
+  border: 1px solid var(--seal-border);
   font-family: var(--display);
+  font-style: italic;
   font-weight: 700;
-  font-size: 0.96rem;
+  font-size: 1.15rem;
   line-height: 1;
   color: var(--seal);
 }
@@ -837,9 +838,9 @@ const viewSections = computed(() =>
   margin: 0;
   font-family: var(--display);
   font-weight: 700;
-  font-size: 1.32em;
-  line-height: 1.3;
-  letter-spacing: -0.02em;
+  font-size: 1.42em;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
   color: var(--ink);
   text-wrap: balance;
 }
@@ -847,90 +848,102 @@ const viewSections = computed(() =>
 .lit-body {
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
+  gap: 1.3rem;
 }
 
 /* ══════════════════════════════════════════
-   ĐOẠN VĂN  (+ chữ cái lồng lớn ở đoạn đầu)
+   ĐOẠN VĂN (+ chữ cái lồng lớn ở đầu bài)
 ══════════════════════════════════════════ */
 .lit-para {
   margin: 0;
-  max-width: 66ch;
+  max-width: 68ch;
   color: var(--ink);
-  text-align: left;
-  text-wrap: pretty;
+  line-height: 1.9;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 .lit-body > .lit-para:first-child::first-letter {
   float: left;
   font-family: var(--display);
   font-weight: 700;
-  font-size: 3.3em;
-  line-height: 0.84;
+  font-size: 3.5em;
+  line-height: 0.82;
   padding: 0.08em 0.12em 0 0;
   color: var(--seal);
+  text-shadow: 1px 1px 0 rgba(139, 30, 30, 0.15);
 }
 
 /* ══════════════════════════════════════════
-   KHÁI NIỆM / ĐỊNH NGHĨA – chú giải
+   KHÁI NIỆM / ĐỊNH NGHĨA – chú giải học thuật
 ══════════════════════════════════════════ */
 .lit-concept {
-  padding: 0.95rem 1.1rem 1rem 1.2rem;
-  background: var(--paper-2);
-  border-left: 2px solid var(--seal);
+  padding: 1.1rem 1.4rem;
+  background: var(--paper-subtle);
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--gold);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
 .lit-concept-label {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  margin-bottom: 0.2rem;
+  gap: 0.45rem;
+  margin-bottom: 0.35rem;
   font-family: var(--display);
-  font-weight: 600;
-  font-size: 1.02em;
-  color: var(--seal);
+  font-weight: 700;
+  font-size: 1.05em;
+  color: var(--gold);
+  letter-spacing: 0.01em;
 }
 
 .lit-concept-text {
   margin: 0;
-  max-width: 62ch;
-  line-height: 1.8;
+  max-width: 66ch;
+  line-height: 1.85;
   color: var(--ink);
 }
 
 /* ══════════════════════════════════════════
-   TRÍCH THƠ / VĂN – khổ thơ
+   TRÍCH THƠ / VĂN – câu trích & khổ thơ
 ══════════════════════════════════════════ */
 .lit-blockquote {
   position: relative;
-  margin: 0.5rem 0;
-  padding: 1rem 1.25rem 1rem 3rem;
-  max-width: 34rem;
-  border-left: 3px solid #93c5fd;
-  border-radius: 0 12px 12px 0;
-  background: #f8fafc;
+  margin: 1rem 0;
+  padding: 1.2rem 1.6rem 1.2rem 3.4rem;
+  max-width: 44rem;
+  border-left: 4px solid var(--seal);
+  border-radius: 0 10px 10px 0;
+  background: var(--paper-subtle);
+  border-top: 1px solid var(--rule-2);
+  border-right: 1px solid var(--rule-2);
+  border-bottom: 1px solid var(--rule-2);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
   text-align: left;
 }
 
 .lit-quote-icon {
   position: absolute;
-  top: 0.9rem;
-  left: 0.8rem;
-  color: #60a5fa;
+  top: 1rem;
+  left: 1rem;
+  color: var(--seal);
+  opacity: 0.75;
 }
 
 .lit-blockquote-text {
   margin: 0;
-  white-space: pre-line; /* giữ nguyên xuống dòng của câu thơ */
-  font-family: var(--display);
-  font-weight: 600;
-  font-size: 1.05em;
-  line-height: 1.75;
-  color: var(--ink-2);
+  white-space: pre-line;
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.08em;
+  line-height: 1.88;
+  color: var(--ink);
 }
 
 .lit-blockquote-footer {
-  margin-top: 0.6rem;
+  margin-top: 0.7rem;
   font-size: 0.92em;
   font-style: italic;
   color: var(--ink-3);
@@ -946,107 +959,124 @@ const viewSections = computed(() =>
 .lit-labeled-single {
   display: grid;
   grid-template-columns: max-content minmax(0, 1fr);
-  column-gap: 1rem;
-  align-items: start;
-  max-width: 66ch;
+  column-gap: 1.1rem;
+  align-items: baseline;
+  max-width: 68ch;
+  padding: 0.4rem 0;
 }
 
 .lit-labeled-term {
   display: inline-flex;
   align-items: baseline;
-  gap: 0.4rem;
+  gap: 0.45rem;
   font-family: var(--display);
   font-style: italic;
-  font-weight: 600;
-  font-size: 1.02em;
+  font-weight: 700;
+  font-size: 1.05em;
   line-height: 1.6;
   color: var(--seal);
 }
 
 .lit-labeled-body {
   margin: 0;
-  line-height: 1.8;
+  line-height: 1.85;
   color: var(--ink);
 }
 
 /* ══════════════════════════════════════════
-   BẢNG NHÃN – như mục lục có đường kẻ
+   BẢNG NHÃN – mục lục trang sách
 ══════════════════════════════════════════ */
 .lit-table {
   margin: 0;
-  border-top: 1px solid var(--ink);
-  border-bottom: 1px solid var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #ffffff;
 }
 
 .lit-table-row {
   display: grid;
-  grid-template-columns: minmax(7.5rem, 12rem) 1fr;
+  grid-template-columns: minmax(8rem, 12.5rem) 1fr;
   column-gap: 1.5rem;
-  padding: 0.85rem 0.25rem;
+  padding: 0.9rem 1.4rem;
+}
+.lit-table-row:nth-child(even) {
+  background: var(--paper-subtle);
 }
 .lit-table-row + .lit-table-row {
-  border-top: 1px dotted var(--ink-3);
+  border-top: 1px solid var(--rule-2);
 }
 
 .lit-table-term {
   display: inline-flex;
   align-items: baseline;
-  gap: 0.4rem;
+  gap: 0.45rem;
   font-family: var(--display);
   font-style: italic;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 1.02em;
   line-height: 1.6;
   color: var(--seal);
 }
 
 .lit-table-def {
   margin: 0;
-  line-height: 1.8;
+  line-height: 1.85;
   color: var(--ink);
 }
 
 /* ══════════════════════════════════════════
-   GHI CHÚ / LƯU Ý / CẢNH BÁO – chú thích bên lề
+   GHI CHÚ / LƯU Ý – trích dẫn bên lề
 ══════════════════════════════════════════ */
 .lit-note {
   --nc: var(--seal);
+  --nbg: var(--seal-soft);
+  --nbd: var(--seal-border);
   display: flex;
   align-items: flex-start;
-  gap: 0.7rem;
-  padding: 0.75rem 0.9rem;
-  border-top: 1px solid var(--rule);
-  border-bottom: 1px solid var(--rule);
-  background: var(--paper-2);
+  gap: 0.85rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--nbd);
+  border-left: 4px solid var(--nc);
+  border-radius: 8px;
+  background: var(--nbg);
 }
 .lit-note--amber {
   --nc: var(--gold);
+  --nbg: var(--gold-soft);
+  --nbd: var(--gold-border);
 }
 .lit-note--blue {
   --nc: var(--chàm);
+  --nbg: var(--chàm-soft);
+  --nbd: var(--chàm-border);
 }
 .lit-note--green {
   --nc: var(--moss);
+  --nbg: var(--moss-soft);
+  --nbd: var(--moss-border);
 }
 .lit-note--red {
   --nc: var(--blood);
+  --nbg: var(--seal-soft);
+  --nbd: var(--seal-border);
 }
 
 .lit-note-glyph {
   flex-shrink: 0;
-  padding-top: 0.2rem;
+  padding-top: 0.15rem;
   color: var(--nc);
 }
 
 .lit-note-body {
   margin: 0;
-  font-size: 0.94em;
-  line-height: 1.75;
+  font-size: 0.96em;
+  line-height: 1.8;
   color: var(--ink-2);
 }
 
 .lit-note-heading {
   font-family: var(--display);
-  font-style: italic;
   font-weight: 700;
   color: var(--nc);
 }
@@ -1055,49 +1085,52 @@ const viewSections = computed(() =>
    VÍ DỤ – đoạn trích kèm phân tích
 ══════════════════════════════════════════ */
 .lit-example {
-  padding-top: 0.9rem;
-  border-top: 1px solid var(--rule);
+  padding: 1.3rem 1.5rem;
+  background: var(--paper-subtle);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
 }
 
 .lit-example-label {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
-  margin: 0 0 0.7rem;
+  gap: 0.5rem;
+  margin: 0 0 0.8rem;
   font-family: var(--display);
-  font-weight: 600;
-  font-size: 1.05em;
+  font-weight: 700;
+  font-size: 1.08em;
   color: var(--seal);
 }
 
 .lit-example-body {
   margin: 0 0 1.1rem;
-  padding: 0.1rem 0 0.1rem 1.25rem;
-  border-left: 2px solid var(--rule);
+  padding: 0.2rem 0 0.2rem 1.2rem;
+  border-left: 3px solid var(--rule);
   font-style: italic;
   line-height: 1.9;
-  color: var(--ink-2);
+  color: var(--ink);
 }
 
 .lit-analysis-point {
   display: flex;
   gap: 0.7rem;
   margin: 0.55rem 0 0;
-  font-size: 0.95em;
+  font-size: 0.96em;
   line-height: 1.75;
-  color: var(--ink);
+  color: var(--ink-2);
 }
 
 .lit-analysis-mark {
   flex-shrink: 0;
   color: var(--seal);
+  font-weight: bold;
 }
 
 /* ══════════════════════════════════════════
    QUY TRÌNH / PHƯƠNG PHÁP
 ══════════════════════════════════════════ */
 .lit-method {
-  padding: 0.9rem 0 0.2rem;
+  padding: 1rem 0 0.3rem;
   border-top: 1px solid var(--rule);
   border-bottom: 1px solid var(--rule);
 }
@@ -1155,44 +1188,55 @@ const viewSections = computed(() =>
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
-  max-width: 66ch;
+  gap: 0.75rem;
+  max-width: 68ch;
 }
 
 .lit-list li {
   display: flex;
-  gap: 0.8rem;
-  line-height: 1.8;
+  gap: 0.85rem;
+  line-height: 1.85;
+  color: var(--ink);
 }
 
 .lit-list-marker {
   flex-shrink: 0;
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 700;
   color: var(--seal);
 }
 
 /* ══════════════════════════════════════════
-   TỔNG KẾT LƯU Ý – trang "ghi nhớ" cuối bài
+   TỔNG KẾT LƯU Ý – khung ghi nhớ cuối bài
 ══════════════════════════════════════════ */
 .lit-recap {
-  max-width: 44rem;
-  margin: 4.5rem auto 0;
-  padding-top: 1.5rem;
-  border-top: 4px double var(--rule);
+  max-width: 100%;
+  margin: 1.5rem 0 0;
+  padding: 2rem 2.2rem;
+  background: #ffffff;
+  border: 1px solid var(--rule);
+  border-top: 4px double var(--seal);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(35, 30, 25, 0.04);
 }
 
 .lit-recap-head {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.4rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--rule);
 }
 
 .lit-recap-title {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
   margin: 0;
   font-family: var(--display);
-  font-weight: 600;
-  font-size: 1.4em;
-  color: var(--ink);
+  font-weight: 700;
+  font-size: 1.35em;
+  color: var(--seal);
+  letter-spacing: -0.01em;
 }
 
 .lit-recap-grid {
@@ -1200,181 +1244,210 @@ const viewSections = computed(() =>
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  column-gap: 2.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
 }
 
 .lit-recap-item {
   --rc: var(--seal);
+  --rbg: var(--seal-soft);
+  --rbd: var(--seal-border);
   display: flex;
-  gap: 0.8rem;
-  padding: 0.95rem 0;
-  border-top: 1px solid var(--rule);
+  gap: 0.85rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--rbd);
+  border-radius: 8px;
+  background: var(--rbg);
 }
 .lit-recap-item--amber {
   --rc: var(--gold);
+  --rbg: var(--gold-soft);
+  --rbd: var(--gold-border);
 }
 .lit-recap-item--blue {
   --rc: var(--chàm);
+  --rbg: var(--chàm-soft);
+  --rbd: var(--chàm-border);
 }
 .lit-recap-item--green {
   --rc: var(--moss);
+  --rbg: var(--moss-soft);
+  --rbd: var(--moss-border);
 }
 .lit-recap-item--red {
   --rc: var(--blood);
+  --rbg: var(--seal-soft);
+  --rbd: var(--seal-border);
 }
 .lit-recap-item--purple {
   --rc: var(--seal);
+  --rbg: var(--seal-soft);
+  --rbd: var(--seal-border);
 }
 
 .lit-recap-item-icon {
   flex-shrink: 0;
-  padding-top: 0.2rem;
+  padding-top: 0.15rem;
   color: var(--rc);
 }
 
 .lit-recap-item-title {
-  margin: 0 0 0.15rem;
+  margin: 0 0 0.25rem;
   font-family: var(--display);
-  font-style: italic;
   font-weight: 700;
-  font-size: 1em;
+  font-size: 1.02em;
   line-height: 1.5;
   color: var(--rc);
 }
 
 .lit-recap-item-desc {
   margin: 0;
-  font-size: 0.92em;
-  line-height: 1.7;
+  font-size: 0.94em;
+  line-height: 1.75;
   color: var(--ink-2);
 }
 
+/* ══════════════════════════════════════════
+   CÂU HỎI ĐỌC HIỂU & SUY NGẪM
+══════════════════════════════════════════ */
 .lit-review {
-  max-width: 46rem;
-  margin: 2rem auto 0;
-  padding: 1.25rem;
+  max-width: 100%;
+  margin: 1.5rem 0 0;
+  padding: 2rem 2.2rem;
   border: 1px solid var(--rule);
-  border-radius: 16px;
+  border-top: 4px solid var(--chàm);
+  border-radius: 12px;
   background: #ffffff;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.03);
+  box-shadow: 0 4px 20px rgba(35, 30, 25, 0.04);
 }
 
 .lit-review-head {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--rule-2);
+  gap: 0.9rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid var(--rule);
 }
 
 .lit-review-icon {
   display: inline-grid;
-  width: 2.4rem;
-  height: 2.4rem;
+  width: 2.6rem;
+  height: 2.6rem;
   flex-shrink: 0;
   place-items: center;
-  border: 1px solid #dbeafe;
-  border-radius: 11px;
-  background: #eff6ff;
-  color: #2563eb;
+  border: 1px solid var(--chàm-border);
+  border-radius: 8px;
+  background: var(--chàm-soft);
+  color: var(--chàm);
 }
 
 .lit-review-title {
   margin: 0;
   color: var(--ink);
-  font-size: 1.08em;
+  font-family: var(--display);
+  font-size: 1.25em;
   font-weight: 700;
 }
 
 .lit-review-subtitle {
-  margin: 0.15rem 0 0;
+  margin: 0.2rem 0 0;
   color: var(--ink-3);
-  font-size: 0.84em;
+  font-size: 0.88em;
 }
 
 .lit-review-list {
   display: grid;
-  gap: 0.75rem;
+  gap: 1rem;
   margin: 0;
-  padding: 1rem 0 0;
+  padding: 1.25rem 0 0;
   list-style: none;
 }
 
 .lit-review-item {
-  padding: 0.85rem 1rem;
-  border: 1px solid var(--rule-2);
-  border-radius: 12px;
-  background: #fbfdff;
+  padding: 1.1rem 1.3rem;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: var(--paper-subtle);
 }
 
 .lit-review-question {
   display: flex;
   align-items: flex-start;
-  gap: 0.65rem;
+  gap: 0.75rem;
 }
 
 .lit-review-question p {
   margin: 0.1rem 0 0;
   color: var(--ink);
   font-weight: 600;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 .lit-review-number {
   display: inline-grid;
-  width: 1.7rem;
-  height: 1.7rem;
+  width: 1.85rem;
+  height: 1.85rem;
   flex-shrink: 0;
   place-items: center;
-  border-radius: 8px;
-  background: #eff6ff;
-  color: #2563eb;
-  font-size: 0.82em;
+  border-radius: 6px;
+  background: var(--chàm-soft);
+  border: 1px solid var(--chàm-border);
+  color: var(--chàm);
+  font-family: var(--display);
+  font-size: 0.9em;
   font-weight: 700;
 }
 
 .lit-review-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  margin: 0.65rem 0 0 2.35rem;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: #2563eb;
+  gap: 0.45rem;
+  margin: 0.75rem 0 0 2.6rem;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--chàm-border);
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--chàm);
   font: inherit;
-  font-size: 0.86em;
+  font-size: 0.88em;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .lit-review-toggle:hover {
-  color: #1d4ed8;
+  background: var(--chàm-soft);
+  border-color: var(--chàm);
 }
 
 .lit-review-answer {
-  margin: 0.7rem 0 0 2.35rem;
-  padding: 0.7rem 0.85rem;
-  border-left: 2px solid #93c5fd;
+  margin: 0.85rem 0 0 2.6rem;
+  padding: 0.9rem 1.15rem;
+  border-left: 3px solid var(--seal);
   border-radius: 0 8px 8px 0;
-  background: #f1f7ff;
+  background: #ffffff;
+  border-top: 1px solid var(--rule-2);
+  border-right: 1px solid var(--rule-2);
+  border-bottom: 1px solid var(--rule-2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
 .lit-review-source {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
-  color: #475569;
-  font-size: 0.78em;
+  gap: 0.4rem;
+  color: var(--seal);
+  font-family: var(--display);
+  font-size: 0.82em;
   font-weight: 700;
 }
 
 .lit-review-answer p {
-  margin: 0.35rem 0 0;
+  margin: 0.4rem 0 0;
   color: var(--ink-2);
-  font-size: 0.92em;
-  line-height: 1.7;
+  font-size: 0.94em;
+  line-height: 1.8;
+  font-style: italic;
 }
 
 /* ══════════════════════════════════════════
@@ -1423,26 +1496,26 @@ const viewSections = computed(() =>
 ══════════════════════════════════════════ */
 .lit-author {
   display: flex;
-  gap: 1rem;
+  gap: 1.25rem;
   align-items: flex-start;
-  padding: 0.9rem 0;
-  border-top: 1px solid var(--rule);
-  border-bottom: 1px solid var(--rule);
+  padding: 1.25rem 1.4rem;
+  background: var(--paper-subtle);
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--seal);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 .lit-author-seal {
   flex-shrink: 0;
   display: grid;
   place-items: center;
-  width: 2.8rem;
-  height: 2.8rem;
-  border: 1px solid #dbeafe;
-  border-radius: 12px;
-  background: #eff6ff;
-  color: #2563eb;
-  font-family: var(--display);
-  font-weight: 700;
-  font-size: 1.5em;
-  line-height: 1;
+  width: 3rem;
+  height: 3rem;
+  border: 1px solid var(--seal-border);
+  border-radius: 50%;
+  background: var(--seal-soft);
+  color: var(--seal);
+  box-shadow: 0 2px 6px rgba(139, 30, 30, 0.08);
 }
 .lit-author-label,
 .lit-context-label,
@@ -1450,18 +1523,21 @@ const viewSections = computed(() =>
 .lit-outline h3,
 .lit-devices h3,
 .lit-exercise-title {
-  margin: 0 0 0.2rem;
+  margin: 0 0 0.25rem;
   font-family: var(--display);
   font-weight: 700;
-  font-size: 1.05em;
+  font-size: 1.08em;
   line-height: 1.5;
   color: var(--seal);
+}
+.lit-context-label {
+  color: var(--chàm);
 }
 .lit-devices h3,
 .lit-exercise-title {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
 }
 .lit-author-text,
 .lit-context-text,
@@ -1469,63 +1545,76 @@ const viewSections = computed(() =>
 .lit-outline p,
 .lit-devices p {
   margin: 0;
-  line-height: 1.8;
+  line-height: 1.85;
 }
 
 .lit-context {
   display: grid;
-  grid-template-columns: 5.15rem 1fr;
-  column-gap: 1rem;
-  padding: 0.25rem 0;
+  grid-template-columns: 5.5rem 1fr;
+  column-gap: 1.25rem;
+  padding: 1.25rem 1.4rem;
+  background: var(--paper-subtle);
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--chàm);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 .lit-context-year {
-  padding-right: 0.8rem;
-  border-right: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-right: 0.9rem;
+  border-right: 2px solid var(--rule);
   text-align: right;
   font-family: var(--display);
   font-style: italic;
-  font-weight: 600;
-  font-size: 1.8em;
-  line-height: 1.1;
-  color: var(--ink-3);
+  font-weight: 700;
+  font-size: 2em;
+  line-height: 1;
+  color: var(--chàm);
 }
 
 .lit-facts {
   margin: 0;
   border: 1px solid var(--rule);
-  background: var(--paper-2);
+  border-radius: 8px;
+  background: var(--paper-subtle);
   padding: 0.5rem 0;
 }
 .lit-fact {
   display: grid;
-  grid-template-columns: minmax(7rem, 10rem) 1fr;
+  grid-template-columns: minmax(7.5rem, 11rem) 1fr;
   column-gap: 1.25rem;
-  padding: 0.5rem 1.4rem;
+  padding: 0.65rem 1.4rem;
 }
 .lit-fact + .lit-fact {
-  border-top: 1px dotted var(--ink-3);
+  border-top: 1px dotted var(--rule);
 }
 .lit-fact dt {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
   font-family: var(--display);
   font-style: italic;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--seal);
 }
 .lit-fact dd {
   margin: 0;
+  line-height: 1.75;
+  color: var(--ink);
 }
 
 .lit-compare {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  border-top: 1px solid var(--rule);
-  border-bottom: 1px solid var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #ffffff;
 }
 .lit-compare-col {
-  padding: 1rem 1.4rem 1.1rem;
+  padding: 1.2rem 1.4rem;
 }
 .lit-compare-col + .lit-compare-col {
   border-left: 1px solid var(--rule);
@@ -1539,29 +1628,30 @@ const viewSections = computed(() =>
 .lit-outline li {
   position: relative;
   display: grid;
-  grid-template-columns: 2.1rem 1fr;
-  column-gap: 0.8rem;
-  padding-bottom: 1rem;
+  grid-template-columns: 2.2rem 1fr;
+  column-gap: 1rem;
+  padding-bottom: 1.25rem;
 }
 .lit-outline li:not(:last-child)::before {
   content: "";
   position: absolute;
-  left: 1.05rem;
-  top: 2.1rem;
+  left: 1.1rem;
+  top: 2.3rem;
   bottom: 0.2rem;
-  border-left: 1px dashed var(--seal);
+  border-left: 2px dashed var(--seal-border);
 }
 .lit-outline-mark {
   display: grid;
   place-items: center;
-  width: 2.1rem;
-  height: 2.1rem;
-  border: 1px solid var(--seal);
-  border-radius: 999px;
-  background: var(--paper);
+  width: 2.2rem;
+  height: 2.2rem;
+  border: 1px solid var(--seal-border);
+  border-radius: 50%;
+  background: var(--seal-soft);
   font-family: var(--display);
   font-style: italic;
   font-weight: 700;
+  font-size: 0.95em;
   color: var(--seal);
 }
 
@@ -1570,31 +1660,38 @@ const viewSections = computed(() =>
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-  gap: 1.5rem 2.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1.25rem;
 }
 .lit-devices li {
-  padding-top: 0.7rem;
-  border-top: 2px solid var(--seal);
+  padding: 1.15rem 1.25rem;
+  background: var(--paper-subtle);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--seal);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 .lit-devices p {
   font-size: 0.96em;
+  line-height: 1.8;
   color: var(--ink-2);
 }
 
 .lit-verse {
   position: relative;
-  margin: 0.75rem 0;
-  padding: 1rem 1rem 0.8rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  background: #f8fafc;
+  margin: 1.2rem 0;
+  padding: 1.4rem 1.8rem 1.2rem;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: var(--paper-subtle);
   text-align: center;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.015);
 }
 .lit-verse-mark {
   display: block;
-  margin: 0 auto 0.45rem;
-  color: #64748b;
+  margin: 0 auto 0.6rem;
+  color: var(--seal);
+  opacity: 0.85;
 }
 .lit-verse-lines {
   display: inline-block;
@@ -1602,19 +1699,19 @@ const viewSections = computed(() =>
 }
 .lit-verse-lines p {
   margin: 0;
-  font-family: var(--display);
+  font-family: var(--serif);
   font-style: italic;
-  font-weight: 500;
-  font-size: 1.06em;
-  line-height: 1.8;
+  font-size: 1.08em;
+  line-height: 2;
+  color: var(--ink);
 }
 .lit-verse-lines p:nth-child(even) {
-  padding-left: 1.5em;
+  padding-left: 1.8em;
 }
 .lit-verse figcaption {
-  margin-top: 0.5rem;
+  margin-top: 0.8rem;
   font-style: italic;
-  font-size: 0.92em;
+  font-size: 0.9em;
   color: var(--ink-3);
 }
 .lit-verse figcaption::before {
@@ -1630,15 +1727,16 @@ const viewSections = computed(() =>
   border-collapse: collapse;
 }
 .lit-grid th {
-  padding: 0.5rem 0.8rem;
+  padding: 0.6rem 0.9rem;
   text-align: left;
-  border-bottom: 1px solid var(--ink);
+  border-bottom: 2px solid var(--seal);
   font-family: var(--display);
   font-style: italic;
+  font-weight: 700;
   color: var(--seal);
 }
 .lit-grid td {
-  padding: 0.55rem 0.8rem;
+  padding: 0.65rem 0.9rem;
   border-bottom: 1px dotted var(--rule);
   vertical-align: top;
 }
@@ -1646,10 +1744,10 @@ const viewSections = computed(() =>
 .lit-analysis > summary {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
   cursor: pointer;
   list-style: none;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.45rem;
   font-family: var(--display);
   font-weight: 600;
   color: var(--seal);
@@ -1666,14 +1764,15 @@ const viewSections = computed(() =>
   content: "▸";
 }
 .lit-phase-label {
-  margin: 0.8rem 0 0;
+  margin: 0.8rem 0 0.2rem;
   font-style: italic;
-  font-size: 0.92em;
-  color: var(--ink-3);
+  font-weight: 600;
+  font-size: 0.94em;
+  color: var(--chàm);
 }
 .lit-conclusion {
   margin: 1rem 0 0;
-  padding-top: 0.7rem;
+  padding-top: 0.8rem;
   border-top: 1px solid var(--rule);
 }
 .lit-conclusion strong {
@@ -1683,21 +1782,24 @@ const viewSections = computed(() =>
 }
 
 .lit-exercise {
-  padding: 1rem 1.4rem;
-  border: 1px dashed var(--ink-3);
+  padding: 1.25rem 1.4rem;
+  border: 1px dashed var(--seal-border);
+  border-radius: 8px;
+  background: var(--paper-subtle);
 }
 .lit-exercise ol {
-  margin: 0.4rem 0 0.6rem;
+  margin: 0.5rem 0 0.7rem;
   padding-left: 1.4rem;
 }
 .lit-exercise li {
   padding-left: 0.3rem;
-  line-height: 1.8;
+  line-height: 1.85;
 }
 .lit-exercise li::marker {
   color: var(--seal);
   font-family: var(--display);
   font-style: italic;
+  font-weight: 700;
 }
 
 @media (max-width: 768px) {
@@ -1710,13 +1812,15 @@ const viewSections = computed(() =>
   }
   .lit-context {
     grid-template-columns: 1fr;
-    row-gap: 0.3rem;
+    row-gap: 0.5rem;
   }
   .lit-context-year {
     border-right: none;
+    border-bottom: 1px solid var(--rule);
     text-align: left;
     padding-right: 0;
-    font-size: 1.7em;
+    padding-bottom: 0.4rem;
+    font-size: 1.8em;
   }
   .lit-fact {
     grid-template-columns: 1fr;
@@ -1734,6 +1838,6 @@ const viewSections = computed(() =>
 }
 .lit-author-text,
 .lit-context-text {
-  max-width: 62ch;
+  max-width: 66ch;
 }
 </style>

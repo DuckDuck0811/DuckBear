@@ -1,5 +1,5 @@
 <template>
-  <main class="other-lesson-page">
+  <main class="other-lesson-page" :class="{ 'is-literature': isLiterature }">
     <header class="reader-toolbar">
       <v-btn
         variant="text"
@@ -62,7 +62,11 @@
         <div class="hero-top-row">
           <div class="lesson-breadcrumbs">
             <span class="subject-pill">
-              <v-icon icon="mdi-book-open-page-variant" size="14" class="mr-1" />
+              <v-icon
+                :icon="isLiterature ? 'mdi-feather' : 'mdi-book-open-page-variant'"
+                size="14"
+                class="mr-1"
+              />
               {{ chapter.bookTitle || subjectName || "Học liệu" }}
             </span>
             <v-icon icon="mdi-chevron-right" size="15" color="#94A3B8" />
@@ -95,7 +99,7 @@
               class="jump-tag-btn"
               @click="scrollToSection(index)"
             >
-              <span class="jump-num">{{ index + 1 }}</span>
+              <span class="jump-num">{{ isLiterature ? toRoman(index + 1) : index + 1 }}</span>
               <span class="jump-text">{{ section.cleanTitle || section.title }}</span>
             </button>
           </div>
@@ -142,7 +146,7 @@
           </div>
           <v-progress-linear
             :model-value="((currentIndex + 1) / (sequence.length || 1)) * 100"
-            color="primary"
+            :color="isLiterature ? '#8b1e1e' : 'primary'"
             height="5"
             rounded
             class="progress-bar-line"
@@ -151,7 +155,7 @@
 
         <v-btn
           variant="flat"
-          color="primary"
+          :color="isLiterature ? '#8b1e1e' : 'primary'"
           append-icon="mdi-arrow-right"
           class="text-none nav-action-btn"
           :disabled="currentIndex < 0 || currentIndex >= sequence.length - 1"
@@ -174,7 +178,7 @@ import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getChapterByIdApi, getChaptersByBookApi } from "@/api/chapter";
 import { getLessonByIdApi, getLessonsByChapterApi } from "@/api/lesson";
-import GeographyLessonContent from "@/view/Lession/subjects/GeographyLessonContent.vue";
+import GeographyLessonContent from "@/view/Lession/subjects/Geography/GeographyLessonContent.vue";
 import GenericLessonContent from "@/view/Lession/subjects/GenericLessonContent.vue";
 import HistoryLessonContent from "@/view/Lession/subjects/HistoryLessonContent.vue";
 import LiteratureLessonContent from "@/view/Lession/subjects/Literature/LiteratureLessonContent.vue";
@@ -214,6 +218,29 @@ const contentComponent = computed(() => {
   if (subject.includes("dia li") || subject.includes("dia ly")) return GeographyLessonContent;
   return GenericLessonContent;
 });
+const isLiterature = computed(
+  () => contentComponent.value === LiteratureLessonContent,
+);
+
+const ROMAN = [
+  "I",
+  "II",
+  "III",
+  "IV",
+  "V",
+  "VI",
+  "VII",
+  "VIII",
+  "IX",
+  "X",
+  "XI",
+  "XII",
+  "XIII",
+  "XIV",
+  "XV",
+];
+const toRoman = (n) => ROMAN[n - 1] || String(n);
+
 const headerSections = computed(() =>
   contentComponent.value === LiteratureLessonContent
     ? parseLiteratureSections(lesson.value?.content)
@@ -298,6 +325,8 @@ watch(() => route.params.lessonId, loadLesson, { immediate: true });
 </script>
 
 <style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600;1,700&display=swap");
+
 .other-lesson-page {
   max-width: 960px;
   margin: 0 auto;
@@ -569,5 +598,126 @@ watch(() => route.params.lessonId, loadLesson, { immediate: true });
     order: -1;
     margin-bottom: 8px;
   }
+}
+
+/* ══════════════════════════════════════════
+   ĐỒNG BỘ GIAO DIỆN MÔN VĂN HỌC (is-literature)
+══════════════════════════════════════════ */
+.other-lesson-page.is-literature {
+  max-width: 860px;
+  font-family: "Lora", "Merriweather", "Noto Serif", Georgia, serif;
+}
+
+.other-lesson-page.is-literature .reader-toolbar {
+  font-family: "Lora", Georgia, serif;
+}
+
+.other-lesson-page.is-literature .view-mode-toggle,
+.other-lesson-page.is-literature .font-size-group {
+  border-color: #e5ded5;
+}
+
+.other-lesson-page.is-literature .lesson-hero-card {
+  padding: 28px 32px;
+  margin-bottom: 24px;
+  border: 1px solid #e5ded5;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(35, 30, 25, 0.04);
+}
+
+.other-lesson-page.is-literature .subject-pill {
+  border: 1px solid #f6c8c4;
+  border-radius: 6px;
+  background: #fcf2f0;
+  color: #8b1e1e;
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+
+.other-lesson-page.is-literature .chapter-pill {
+  font-family: "Lora", Georgia, serif;
+  color: #6b726d;
+}
+
+.other-lesson-page.is-literature .meta-chip {
+  font-family: "Lora", Georgia, serif;
+  background: #faf8f5;
+  border: 1px solid #e5ded5;
+  color: #4a4540;
+}
+
+.other-lesson-page.is-literature .meta-chip--highlight {
+  background: #fefce8;
+  border-color: #fef08a;
+  color: #854d0e;
+}
+
+.other-lesson-page.is-literature .hero-lesson-title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(24px, 3.4vw, 32px);
+  color: #1f2421;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  margin-bottom: 18px;
+}
+
+.other-lesson-page.is-literature .section-quick-jump {
+  border-top: 1px dashed #e5ded5;
+  padding-top: 16px;
+}
+
+.other-lesson-page.is-literature .quick-jump-label {
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 700;
+  color: #8b1e1e;
+  font-size: 13px;
+}
+
+.other-lesson-page.is-literature .jump-tag-btn {
+  font-family: "Lora", Georgia, serif;
+  border: 1px solid #e5ded5;
+  border-radius: 8px;
+  background: #faf8f5;
+  color: #1f2421;
+  font-size: 12.5px;
+  transition: all 0.2s ease;
+}
+
+.other-lesson-page.is-literature .jump-tag-btn:hover {
+  border-color: #f6c8c4;
+  background: #fcf2f0;
+  color: #8b1e1e;
+}
+
+.other-lesson-page.is-literature .jump-num {
+  font-family: "Playfair Display", Georgia, serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 11px;
+  background: #fcf2f0;
+  border: 1px solid #f6c8c4;
+  border-radius: 6px;
+  color: #8b1e1e;
+}
+
+.other-lesson-page.is-literature .lesson-navigation-bar {
+  margin-top: 24px;
+  border: 1px solid #e5ded5;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(35, 30, 25, 0.04);
+}
+
+.other-lesson-page.is-literature .nav-btn-sub {
+  font-family: "Playfair Display", Georgia, serif;
+  letter-spacing: 0.05em;
+}
+
+.other-lesson-page.is-literature .nav-btn-title {
+  font-family: "Lora", Georgia, serif;
 }
 </style>
