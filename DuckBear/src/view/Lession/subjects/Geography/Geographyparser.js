@@ -206,7 +206,7 @@ const CAUSE_RE = /^(nguyên nhân)/i;
 const EFFECT_RE = /^(hậu quả|hệ quả|tác động|ảnh hưởng)/i;
 const SOLUTION_RE = /^(giải pháp|biện pháp|phương hướng|hướng khắc phục)/i;
 const GROUP_EXTRA_RE =
-  /^(đặc điểm|biểu hiện|vai trò|ý nghĩa|các nhân tố|nhân tố|thực trạng|hiện trạng|phân bố|tình hình)/i;
+  /^(đặc điểm|biểu hiện|vai trò|ý nghĩa|các nhân tố|nhân tố|thực trạng|hiện trạng|phân bố|tình hình|yêu cầu cần đạt|mục tiêu bài học|mục tiêu|chuẩn bị)/i;
 
 export function classifyLabel(label) {
   const l = String(label || "").trim();
@@ -271,6 +271,9 @@ function detectHeading(line) {
   const markdown = line.match(/^#{1,6}\s+(.+)$/);
   if (markdown) return { title: markdown[1].trim(), rest: "" };
 
+  const secPattern = line.match(/^(?:phần|mục|chương|bài)\s+(\d+|[IVX]+)\s*[:.\-–]\s*(.+)$/i);
+  if (secPattern) return { title: secPattern[2].trim(), rest: "" };
+
   if (BLOCK_KEYWORDS.test(line)) return null;
   if (EXTREME_RE.test(line) || DIRECTION_RE.test(line)) return null;
 
@@ -291,6 +294,9 @@ function detectHeading(line) {
 }
 
 function isNumberedHeading(line) {
+  const secPattern = line.match(/^(?:phần|mục|chương|bài)\s+(\d+|[IVX]+)\s*[:.\-–]\s*(.+)$/i);
+  if (secPattern) return secPattern[2].trim().replace(/:$/, "");
+
   const m = line.match(NUMBERED);
   if (!m) return null;
   if (/^[IVX]+$/.test(m[1])) return m[2].trim().replace(/:$/, "");
@@ -393,6 +399,15 @@ function toBlock(line) {
     };
   }
 
+  const goal = line.match(/^(yêu cầu cần đạt|mục tiêu bài học|mục tiêu)\s*[:.]\s*(.*)$/i);
+  if (goal) {
+    return {
+      type: "goal-head",
+      title: goal[1].charAt(0).toUpperCase() + goal[1].slice(1),
+      text: goal[2] || "",
+    };
+  }
+
   const head = line.match(/^([^:.]{2,48}):$/);
   if (head && isGroupLabel(head[1]))
     return { type: "label-head", label: head[1].trim() };
@@ -409,6 +424,23 @@ function collect(raw) {
   const mid = [];
   for (let i = 0; i < raw.length; i += 1) {
     const b = raw[i];
+
+    if (b.type === "goal-head") {
+      const items = b.text ? [b.text] : [];
+      let j = i + 1;
+      while (j < raw.length) {
+        const n = raw[j];
+        if (n.type === "list-item" || n.type === "paragraph") {
+          items.push(n.text);
+          j += 1;
+        } else {
+          break;
+        }
+      }
+      i = j - 1;
+      mid.push({ type: "goal", title: b.title, items });
+      continue;
+    }
 
     if (b.type === "label-head") {
       const items = [];

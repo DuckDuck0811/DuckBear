@@ -1,17 +1,14 @@
 <template>
-  <!-- Môn Lịch Sử - History lesson content (amber/brown theme) -->
-  <GenericLessonContent :lesson="lesson" :chapter="chapter" :fontSize="fontSize" />
+  <!-- Môn Lịch Sử - History specific lesson content renderer -->
+  <Historylessoncontent :lesson="lesson" :chapter="chapter" :fontSize="fontSize" />
 </template>
 
 <script setup>
 /**
  * HistoryLessonContent.vue
- * Môn Lịch sử - History specific lesson content renderer
- *
- * Màu amber/nâu đồng - gợi nhớ lịch sử.
- * Có thể mở rộng: timeline events, map widgets, date highlights...
+ * Môn Lịch sử - Delegate to History/Historylessoncontent.vue
  */
-import GenericLessonContent from "./GenericLessonContent.vue";
+import Historylessoncontent from "./History/Historylessoncontent.vue";
 
 defineProps({
   lesson: { type: Object, required: true },
@@ -19,4 +16,3 @@ defineProps({
   fontSize: { type: String, default: "normal" },
 });
 </script>
-

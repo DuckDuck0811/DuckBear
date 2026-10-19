@@ -1,5 +1,5 @@
 <template>
-  <main class="other-lesson-page" :class="{ 'is-literature': isLiterature }">
+  <main class="other-lesson-page" :class="{ 'is-literature': isLiterature, 'is-geography': isGeography, 'is-history': isHistory }">
     <header class="reader-toolbar">
       <v-btn
         variant="text"
@@ -63,7 +63,7 @@
           <div class="lesson-breadcrumbs">
             <span class="subject-pill">
               <v-icon
-                :icon="isLiterature ? 'mdi-feather' : 'mdi-book-open-page-variant'"
+                :icon="isLiterature ? 'mdi-feather' : (isGeography ? 'mdi-earth' : (isHistory ? 'mdi-script-text-outline' : 'mdi-book-open-page-variant'))"
                 size="14"
                 class="mr-1"
               />
@@ -146,7 +146,7 @@
           </div>
           <v-progress-linear
             :model-value="((currentIndex + 1) / (sequence.length || 1)) * 100"
-            :color="isLiterature ? '#8b1e1e' : 'primary'"
+            :color="isLiterature ? '#8b1e1e' : (isGeography ? '#0284c7' : (isHistory ? '#b45309' : 'primary'))"
             height="5"
             rounded
             class="progress-bar-line"
@@ -155,7 +155,7 @@
 
         <v-btn
           variant="flat"
-          :color="isLiterature ? '#8b1e1e' : 'primary'"
+          :color="isLiterature ? '#8b1e1e' : (isGeography ? '#0284c7' : (isHistory ? '#b45309' : 'primary'))"
           append-icon="mdi-arrow-right"
           class="text-none nav-action-btn"
           :disabled="currentIndex < 0 || currentIndex >= sequence.length - 1"
@@ -179,10 +179,11 @@ import { useRoute, useRouter } from "vue-router";
 import { getChapterByIdApi, getChaptersByBookApi } from "@/api/chapter";
 import { getLessonByIdApi, getLessonsByChapterApi } from "@/api/lesson";
 import GeographyLessonContent from "@/view/Lession/subjects/Geography/GeographyLessonContent.vue";
-import GenericLessonContent from "@/view/Lession/subjects/GenericLessonContent.vue";
-import HistoryLessonContent from "@/view/Lession/subjects/HistoryLessonContent.vue";
+import HistoryLessonContent from "@/view/Lession/subjects/History/Historylessoncontent.vue";
 import LiteratureLessonContent from "@/view/Lession/subjects/Literature/LiteratureLessonContent.vue";
 import { parseLiteratureSections } from "@/view/Lession/subjects/Literature/Literatureparser";
+import { parseGeographySections } from "@/view/Lession/subjects/Geography/Geographyparser";
+import { parseHistorySections } from "@/view/Lession/subjects/History/Historyparser";
 
 const route = useRoute();
 const router = useRouter();
@@ -203,23 +204,83 @@ const currentIndex = computed(() =>
   ),
 );
 
-const subjectName = computed(() => String(route.query.subjectName || ""));
+function removeVietnameseTones(str) {
+  return String(str || "")
+    .toLocaleLowerCase("vi")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[đĐ]/g, "d")
+    .trim();
+}
+
+const subjectName = computed(() => {
+  return String(
+    route.query.subjectName ||
+    chapter.value?.subjectName ||
+    chapter.value?.bookTitle ||
+    ""
+  );
+});
+
 const estimatedMinutes = computed(() => {
   const words = (lesson.value?.content || "").trim().split(/\s+/).filter(Boolean).length;
   return Math.max(3, Math.min(10, Math.ceil(words / 100)));
 });
+
+const rawSubjectText = computed(() => {
+  return [
+    route.query.subjectName,
+    chapter.value?.bookTitle,
+    chapter.value?.subjectName,
+    chapter.value?.title,
+    lesson.value?.title,
+  ]
+    .filter(Boolean)
+    .join(" ");
+});
+
 const normalizedSubject = computed(() =>
-  subjectName.value.toLocaleLowerCase("vi").normalize("NFD").replace(/[\u0300-\u036f]/g, ""),
+  removeVietnameseTones(rawSubjectText.value),
 );
+
 const contentComponent = computed(() => {
   const subject = normalizedSubject.value;
-  if (subject.includes("ngu van") || subject.includes("van hoc")) return LiteratureLessonContent;
-  if (subject.includes("lich su")) return HistoryLessonContent;
-  if (subject.includes("dia li") || subject.includes("dia ly")) return GeographyLessonContent;
+  const raw = rawSubjectText.value.toLocaleLowerCase("vi");
+  if (
+    subject.includes("ngu van") ||
+    subject.includes("van hoc") ||
+    raw.includes("ngữ văn") ||
+    raw.includes("văn học")
+  ) {
+    return LiteratureLessonContent;
+  }
+  if (
+    subject.includes("lich su") ||
+    raw.includes("lịch sử") ||
+    raw.includes("sử")
+  ) {
+    return HistoryLessonContent;
+  }
+  if (
+    subject.includes("dia li") ||
+    subject.includes("dia ly") ||
+    raw.includes("địa lí") ||
+    raw.includes("địa lý") ||
+    raw.includes("địa ly") ||
+    raw.includes("địa")
+  ) {
+    return GeographyLessonContent;
+  }
   return GenericLessonContent;
 });
 const isLiterature = computed(
   () => contentComponent.value === LiteratureLessonContent,
+);
+const isGeography = computed(
+  () => contentComponent.value === GeographyLessonContent,
+);
+const isHistory = computed(
+  () => contentComponent.value === HistoryLessonContent,
 );
 
 const ROMAN = [
@@ -241,11 +302,18 @@ const ROMAN = [
 ];
 const toRoman = (n) => ROMAN[n - 1] || String(n);
 
-const headerSections = computed(() =>
-  contentComponent.value === LiteratureLessonContent
-    ? parseLiteratureSections(lesson.value?.content)
-    : [],
-);
+const headerSections = computed(() => {
+  if (contentComponent.value === LiteratureLessonContent) {
+    return parseLiteratureSections(lesson.value?.content);
+  }
+  if (contentComponent.value === GeographyLessonContent) {
+    return parseGeographySections(lesson.value?.content);
+  }
+  if (contentComponent.value === HistoryLessonContent) {
+    return parseHistorySections(lesson.value?.content);
+  }
+  return [];
+});
 
 function scrollToSection(index) {
   document
